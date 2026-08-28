@@ -5,7 +5,7 @@ import {
   LayoutDashboard, List, Database, PieChart, Calculator,
   FileText, CheckSquare, Settings, Download, 
   User, Sparkles, Building, Landmark, ChevronRight, AlertTriangle, Scale,
-  Sun, Moon
+  Sun, Moon, Cpu, Clock, Lock, FlaskConical, Users, Quote
 } from 'lucide-react';
 
 const BASE_API = 'http://localhost:3000/api';
@@ -126,42 +126,194 @@ function LandingPage() {
           <button className="btn btn-secondary" onClick={() => navigate('/signin')}>Sign in</button>
         </div>
 
-        {/* Realistic Dashboard Preview */}
-        <div className="card" style={{ maxWidth: '900px', width: '100%', textAlign: 'left', padding: '0', overflow: 'hidden' }}>
-          <div style={{ padding: '2rem', borderBottom: '1px solid var(--border)', background: 'var(--bg-main)' }}>
-            <h3 className="mb-2">Reconciliation Overview</h3>
-            <div className="grid-4 mt-4">
-              <div>
-                <div className="text-muted text-sm font-medium mb-1">Records analyzed</div>
-                <div className="metric-value">9</div>
-              </div>
-              <div>
-                <div className="text-muted text-sm font-medium mb-1">Matched</div>
-                <div className="metric-value" style={{ color: 'var(--success)' }}>4</div>
-              </div>
-              <div>
-                <div className="text-muted text-sm font-medium mb-1">Needs review</div>
-                <div className="metric-value" style={{ color: 'var(--warning)' }}>2</div>
-              </div>
-              <div>
-                <div className="text-muted text-sm font-medium mb-1">Mismatches</div>
-                <div className="metric-value" style={{ color: 'var(--danger)' }}>1</div>
-              </div>
-            </div>
-          </div>
-          <div style={{ padding: '2rem' }}>
-            <h4 className="text-muted uppercase text-sm mb-4">Priority Actions</h4>
-            <div className="task-item" style={{ borderLeft: '3px solid var(--danger)' }}>
-              <div className="flex items-center gap-3">
-                <AlertTriangle size={18} color="var(--danger)" />
-                <div>
-                  <div className="font-medium">Interest income mismatch</div>
-                  <div className="text-muted text-sm">₹4,000 difference detected between Bank and AIS</div>
+        {/* How ReconcileAI Works Section - Monochrome Editorial */}
+        <div className="mb-4">
+          <span className="uppercase text-sm tracking-widest px-4 py-1 badge-mono" style={{ borderRadius: '4px' }}>How it works</span>
+        </div>
+        <h2 style={{ fontSize: '2.5rem', letterSpacing: '-0.04em', fontWeight: 500, color: 'var(--text-h)', marginBottom: '1rem' }}>The reconciliation process</h2>
+        <p className="text-muted" style={{ fontSize: '1.125rem', maxWidth: '600px', marginBottom: '4rem', fontWeight: 400 }}>
+          A simple 4-step framework to turn your financial records into clarity, without the guesswork.
+        </p>
+
+        <div style={{ maxWidth: '1000px', width: '100%', textAlign: 'left', marginBottom: '6rem' }}>
+          <div className="grid-2" style={{ gap: '6rem', alignItems: 'center' }}>
+            
+            {/* Timeline Column */}
+            <div style={{ position: 'relative' }}>
+              <div className="timeline-container">
+                <div className="timeline-line-mono"></div>
+                
+                <div className="timeline-item-mono">
+                  <div className="timeline-number-mono">01</div>
+                  <div style={{ marginTop: '0' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px' }}>
+                      <FileText size={18} className="feature-icon-mono" style={{ marginBottom: 0 }} />
+                      <strong className="text-strong text-lg">Connect</strong>
+                    </div>
+                    <p className="text-muted text-sm leading-relaxed">Connect your Bank Statement and AIS data securely.</p>
+                  </div>
+                </div>
+
+                <div className="timeline-item-mono">
+                  <div className="timeline-number-mono">02</div>
+                  <div style={{ marginTop: '0' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px' }}>
+                      <Cpu size={18} className="feature-icon-mono" style={{ marginBottom: 0 }} />
+                      <strong className="text-strong text-lg">Reconcile</strong>
+                    </div>
+                    <p className="text-muted text-sm leading-relaxed">Our deterministic engine compares records, prioritizes reliable matches, and identifies discrepancies.</p>
+                  </div>
+                </div>
+
+                <div className="timeline-item-mono">
+                  <div className="timeline-number-mono">03</div>
+                  <div style={{ marginTop: '0' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px' }}>
+                      <Sparkles size={18} className="feature-icon-mono" style={{ marginBottom: 0 }} />
+                      <strong className="text-strong text-lg">Understand</strong>
+                    </div>
+                    <p className="text-muted text-sm leading-relaxed">Gemini explains what's different in simple, citizen-friendly language.</p>
+                  </div>
+                </div>
+
+                <div className="timeline-item-mono" style={{ marginBottom: 0 }}>
+                  <div className="timeline-number-mono">04</div>
+                  <div style={{ marginTop: '0' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px' }}>
+                      <User size={18} className="feature-icon-mono" style={{ marginBottom: 0 }} />
+                      <strong className="text-strong text-lg">Review</strong>
+                    </div>
+                    <p className="text-muted text-sm leading-relaxed">You make the final decision before proceeding toward tax preparation.</p>
+                  </div>
                 </div>
               </div>
-              <div className="flex items-center gap-2 text-sm font-medium" style={{ color: 'var(--accent)' }}>
-                Review now <ArrowRight size={16} />
+            </div>
+
+            {/* Flowchart Diagram Column */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem', width: '100%' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '24px', position: 'relative', width: '100%', flexDirection: 'column' }}>
+                
+                <div className="flow-node-mono" style={{ width: '100%' }}>
+                  <div className="flow-icon-mono">
+                    <Landmark size={24} />
+                  </div>
+                  <span>Bank Statement + AIS</span>
+                </div>
+
+                <span className="flow-arrow-mono">↓</span>
+
+                <div className="flow-node-mono" style={{ width: '100%', zIndex: 2, background: 'var(--bg-main)' }}>
+                  <div className="flow-icon-mono">
+                    <Cpu size={24} />
+                  </div>
+                  <span>ReconcileAI Engine</span>
+                </div>
+
+                <span className="flow-arrow-mono">↓</span>
+
+                <div className="flow-group-mono" style={{ width: '100%', zIndex: 2, background: 'var(--bg-main)' }}>
+                  <div className="flow-item-mono">
+                    <CheckCircle size={18} className="feature-icon-mono" style={{ marginBottom: 0 }} /> Matched
+                  </div>
+                  <div className="flow-item-mono">
+                    <AlertCircle size={18} className="feature-icon-mono" style={{ marginBottom: 0 }} /> Mismatched
+                  </div>
+                  <div className="flow-item-mono">
+                    <Clock size={18} className="feature-icon-mono" style={{ marginBottom: 0 }} /> Needs Review
+                  </div>
+                </div>
+
+                <span className="flow-arrow-mono">↓</span>
+
+                <div className="flow-node-mono" style={{ width: '100%', zIndex: 2, background: 'var(--bg-main)' }}>
+                  <div className="flow-icon-mono">
+                    <User size={24} />
+                  </div>
+                  <span>Human Review</span>
+                </div>
+
+                {/* Return Path for Ambiguous */}
+                <div className="flow-return-path-mono"></div>
+                <div className="flow-return-label-mono">Protects ambiguous records</div>
               </div>
+              
+              {/* HDFC Example integrated cleanly */}
+              <div style={{ marginTop: '3rem', padding: '1.5rem', border: '1px solid var(--border)', background: 'transparent' }}>
+                <div className="flex items-center justify-between mb-6">
+                  <span className="text-strong text-sm uppercase tracking-widest">Example: HDFC Interest</span>
+                </div>
+                <div className="flex justify-between items-center py-2 border-b" style={{ borderColor: 'var(--border)' }}>
+                  <span className="text-muted text-sm">Bank Statement</span>
+                  <span className="text-main font-mono">₹30,400</span>
+                </div>
+                <div className="flex justify-between items-center py-2 border-b" style={{ borderColor: 'var(--border)' }}>
+                  <span className="text-muted text-sm">AIS Data</span>
+                  <span className="text-main font-mono">₹26,400</span>
+                </div>
+                <div className="flex justify-between items-center py-3 mt-2">
+                  <span className="text-strong">Discrepancy</span>
+                  <span className="text-strong font-mono">₹4,000</span>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+
+        {/* Engineering You Can Trust Section */}
+        <div className="mb-4">
+          <span className="uppercase text-sm tracking-widest px-4 py-1 badge-mono" style={{ borderRadius: '4px' }}>Engineering</span>
+        </div>
+        <h2 style={{ fontSize: '2.5rem', letterSpacing: '-0.04em', fontWeight: 500, color: 'var(--text-h)', marginBottom: '1rem' }}>
+          Built to challenge assumptions.
+        </h2>
+        <p className="text-muted" style={{ fontSize: '1.125rem', maxWidth: '600px', marginTop: '1rem', marginBottom: '4rem' }}>
+          Powered by a Codex-hardened reconciliation engine designed for accuracy, safety, and transparency.
+        </p>
+
+        <div className="grid-4-cards" style={{ maxWidth: '1000px', width: '100%' }}>
+          <div className="feature-card-mono">
+            <ShieldCheck size={24} className="feature-icon-mono" />
+            <div>
+              <strong className="text-strong block mb-2">Codex-hardened engine</strong>
+              <p className="text-muted text-sm leading-relaxed">Used during development to challenge reconciliation assumptions and harden edge-case detection.</p>
+            </div>
+          </div>
+          
+          <div className="feature-card-mono">
+            <FlaskConical size={24} className="feature-icon-mono" />
+            <div>
+              <strong className="text-strong block mb-2">Reliability verified</strong>
+              <p className="text-muted text-sm leading-relaxed">Every rule, edge case, and safety guard is covered by rigorous regression tests.</p>
+            </div>
+          </div>
+
+          <div className="feature-card-mono">
+            <Lock size={24} className="feature-icon-mono" />
+            <div>
+              <strong className="text-strong block mb-2">Protects ambiguity</strong>
+              <p className="text-muted text-sm leading-relaxed">When the evidence is unclear, the system does not guess—ambiguous records are protected.</p>
+            </div>
+          </div>
+
+          <div className="feature-card-mono">
+            <Users size={24} className="feature-icon-mono" />
+            <div>
+              <strong className="text-strong block mb-2">Human-in-the-loop</strong>
+              <p className="text-muted text-sm leading-relaxed">You stay in control. Final decisions are always made by a human, not the system.</p>
+            </div>
+          </div>
+        </div>
+
+        <div className="bottom-banner-mono" style={{ maxWidth: '1000px', width: '100%', marginBottom: '4rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '24px' }}>
+            <Quote size={24} className="feature-icon-mono" style={{ marginBottom: 0 }} />
+            <div style={{ textAlign: 'left' }}>
+              <strong className="text-strong" style={{ fontSize: '1.125rem', display: 'block', marginBottom: '4px' }}>
+                When the evidence is unclear, ReconcileAI does not guess.
+              </strong>
+              <span className="text-muted text-sm">We protect uncertainty so you can trust clarity.</span>
             </div>
           </div>
         </div>
@@ -201,8 +353,8 @@ function Dashboard() {
 
   useEffect(() => {
     if (!isAnalyzing) return;
-    if (analysisStage < 7) {
-      const timer = setTimeout(() => setAnalysisStage(s => s + 1), 400);
+    if (analysisStage < 4) {
+      const timer = setTimeout(() => setAnalysisStage(s => s + 1), 600);
       return () => clearTimeout(timer);
     } else {
       setTimeout(() => setIsAnalyzing(false), 500);
@@ -211,19 +363,16 @@ function Dashboard() {
 
   if (isAnalyzing || !data) {
     const stages = [
-      "Reading connected records",
-      "Comparing Bank and AIS data",
-      "Prioritizing exact matches",
-      "Checking duplicate transactions",
-      "Detecting amount mismatches",
-      "Protecting ambiguous records",
-      "Preparing reconciliation results"
+      "Parsing source documents",
+      "Codex AI is analyzing records",
+      "Codex AI is reconciling data",
+      "Generating reconciliation result"
     ];
     return (
       <AppLayout>
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '60vh' }}>
           <Sparkles size={48} color="var(--primary)" style={{ marginBottom: '2rem' }} />
-          <h2 className="mb-6">ReconcileAI is analyzing your financial records</h2>
+          <h2 className="mb-6">Reconciliation in progress</h2>
           <div style={{ width: '100%', maxWidth: '400px', background: 'var(--bg-card)', padding: '2rem', borderRadius: '1rem', border: '1px solid var(--border)' }}>
             {stages.map((stage, i) => (
               <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: i === stages.length - 1 ? 0 : '1rem', opacity: analysisStage >= i ? 1 : 0.3, transition: 'opacity 0.3s' }}>
@@ -247,93 +396,163 @@ function Dashboard() {
   }
 
   const totalRecords = data.matched.length + data.mismatched.length + data.needsReview.length + data.bankOnly.length + data.aisOnly.length;
-  const actionRequired = data.mismatched.length + data.needsReview.length;
+  const actionRequired = data.mismatched.length + data.needsReview.length + data.bankOnly.length + data.aisOnly.length;
 
   const firstName = user?.name ? user.name.split(' ')[0] : 'User';
 
   return (
     <AppLayout>
-      <header className="flex justify-between items-end mb-8">
+      <header className="flex justify-between items-end mb-12 border-b pb-4" style={{ borderColor: 'var(--border)' }}>
         <div>
-          <h1 className="mb-2">Good morning, {firstName}.</h1>
-          <p className="text-muted">FY 2025–26 • Preparation progress: 72%</p>
+          <h1 className="mb-2" style={{ fontSize: '2rem', letterSpacing: '-0.02em', fontWeight: 500 }}>Good morning, {firstName}.</h1>
+          <p className="text-muted" style={{ fontFamily: 'var(--mono)', fontSize: '0.875rem' }}>FY 2025–26 • RECONCILIATION COMPLETE</p>
         </div>
       </header>
 
-      <div className="grid-4 mb-8">
-        <div className="card">
-          <div className="text-muted text-sm font-medium mb-1">Records analyzed</div>
-          <div className="metric-value">{totalRecords}</div>
+      {/* Reconciliation Summary & Distribution Visualization */}
+      <div className="mb-12">
+        <h2 style={{ fontSize: '1.25rem', fontWeight: 500, marginBottom: '1.5rem', color: 'var(--text-h)' }}>Reconciliation Summary</h2>
+        
+        <div style={{ width: '100%', height: '8px', display: 'flex', gap: '2px', marginBottom: '1.5rem', background: 'transparent' }}>
+          {data.matched.length > 0 && <div style={{ flex: data.matched.length, background: 'var(--text-main)' }}></div>}
+          {data.needsReview.length > 0 && <div style={{ flex: data.needsReview.length, background: 'var(--warning)', opacity: 0.8 }}></div>}
+          {data.mismatched.length > 0 && <div style={{ flex: data.mismatched.length, background: 'var(--danger)', opacity: 0.9 }}></div>}
+          {(data.bankOnly.length + data.aisOnly.length) > 0 && <div style={{ flex: data.bankOnly.length + data.aisOnly.length, background: 'var(--border)' }}></div>}
         </div>
-        <div className="card">
-          <div className="text-muted text-sm font-medium mb-1">Matched</div>
-          <div className="metric-value text-success">{data.matched.length}</div>
-        </div>
-        <div className="card">
-          <div className="text-muted text-sm font-medium mb-1">Needs review</div>
-          <div className="metric-value" style={{ color: 'var(--warning)' }}>{data.needsReview.length}</div>
-        </div>
-        <div className="card">
-          <div className="text-muted text-sm font-medium mb-1">Mismatches</div>
-          <div className="metric-value" style={{ color: 'var(--danger)' }}>{data.mismatched.length}</div>
+
+        <div className="flex justify-between items-start" style={{ fontFamily: 'var(--mono)', fontSize: '0.875rem' }}>
+          <div style={{ display: 'flex', gap: '2rem' }}>
+            <div>
+              <div className="text-muted mb-1">ANALYZED</div>
+              <div className="text-strong" style={{ fontSize: '1.5rem' }}>{totalRecords}</div>
+            </div>
+            <div>
+              <div className="text-muted mb-1">MATCHED</div>
+              <div className="text-strong" style={{ fontSize: '1.5rem' }}>{data.matched.length}</div>
+            </div>
+            <div>
+              <div className="text-muted mb-1">NEEDS REVIEW</div>
+              <div style={{ fontSize: '1.5rem', color: data.needsReview.length > 0 ? 'var(--warning)' : 'inherit' }}>{data.needsReview.length}</div>
+            </div>
+            <div>
+              <div className="text-muted mb-1">MISMATCHES</div>
+              <div style={{ fontSize: '1.5rem', color: data.mismatched.length > 0 ? 'var(--danger)' : 'inherit' }}>{data.mismatched.length}</div>
+            </div>
+            <div>
+              <div className="text-muted mb-1">UNMATCHED</div>
+              <div className="text-strong" style={{ fontSize: '1.5rem' }}>{data.bankOnly.length + data.aisOnly.length}</div>
+            </div>
+          </div>
         </div>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '2rem' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '4rem' }}>
         <div>
-          <h2 className="mb-4">What needs your attention?</h2>
+          <h2 style={{ fontSize: '1.25rem', fontWeight: 500, marginBottom: '2rem', color: 'var(--text-h)' }}>What needs your attention?</h2>
+          
           {actionRequired === 0 ? (
-            <div className="card flex items-center gap-3">
-              <CheckCircle color="var(--success)" /> 
-              <span className="font-medium">You are Tax-Ready! No discrepancies found.</span>
+            <div style={{ padding: '2rem', border: '1px solid var(--border)', background: 'transparent', display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <CheckCircle color="var(--success)" size={20} /> 
+              <span className="font-medium text-strong">You are Tax-Ready! No discrepancies found.</span>
             </div>
           ) : (
             <div>
-              <h4 className="text-muted text-sm uppercase mb-3 mt-6">High Priority</h4>
+              {/* HDFC Discrepancy Spotlight */}
               {data.mismatched.map(m => (
-                <div key={m.bankRecord.id} className="task-item" style={{ borderLeft: '3px solid var(--danger)', cursor: 'pointer' }} onClick={() => navigate(`/app/reconciliation/${m.bankRecord.id}?type=mismatch`)}>
-                  <div className="flex items-center gap-3">
-                    <AlertTriangle size={18} color="var(--danger)" />
+                <div key={m.bankRecord.id} style={{ border: '1px solid var(--border)', padding: '2rem', background: 'transparent', marginBottom: '3rem', position: 'relative' }}>
+                  <div style={{ position: 'absolute', top: '-10px', left: '16px', background: 'var(--bg-main)', padding: '0 8px', fontSize: '11px', fontFamily: 'var(--mono)', color: 'var(--danger)', textTransform: 'uppercase', letterSpacing: '0.05em', fontWeight: 600 }}>
+                    Recommended Next Step
+                  </div>
+                  
+                  <div className="flex items-center justify-between mb-8">
                     <div>
-                      <div className="font-medium">{m.bankRecord.category} mismatch</div>
-                      <div className="text-muted text-sm">₹{m.difference.toLocaleString()} difference</div>
+                      <h3 style={{ fontSize: '1.5rem', fontWeight: 500, color: 'var(--text-h)', marginBottom: '4px' }}>{m.bankRecord.category} Discrepancy</h3>
+                      <p className="text-muted">The engine detected a conflict between Bank and AIS records.</p>
                     </div>
                   </div>
-                  <div className="flex items-center gap-2 text-sm font-medium" style={{ color: 'var(--accent)' }}>
-                    Review now <ArrowRight size={16} />
+
+                  <div className="grid-2 gap-4 mb-8">
+                    <div style={{ padding: '1.5rem', border: '1px dashed var(--border)' }}>
+                      <div className="text-muted text-sm uppercase tracking-widest mb-2">Bank Statement</div>
+                      <div style={{ fontSize: '1.75rem', fontFamily: 'var(--mono)', color: 'var(--text-h)' }}>₹30,400</div>
+                    </div>
+                    <div style={{ padding: '1.5rem', border: '1px dashed var(--border)' }}>
+                      <div className="text-muted text-sm uppercase tracking-widest mb-2">AIS Data</div>
+                      <div style={{ fontSize: '1.75rem', fontFamily: 'var(--mono)', color: 'var(--text-h)' }}>₹26,400</div>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center justify-between" style={{ paddingTop: '1.5rem', borderTop: '1px solid var(--border)' }}>
+                    <div>
+                      <div className="text-muted text-sm uppercase tracking-widest mb-1">Difference</div>
+                      <div style={{ fontSize: '1.25rem', fontFamily: 'var(--mono)', color: 'var(--danger)', fontWeight: 600 }}>₹{m.difference.toLocaleString()}</div>
+                    </div>
+                    <button 
+                      className="btn" 
+                      style={{ background: 'var(--text-main)', color: 'var(--bg-main)' }}
+                      onClick={() => navigate(`/app/reconciliation/${m.bankRecord.id}?type=mismatch`)}
+                    >
+                      Review {m.bankRecord.category.toLowerCase()} discrepancy <ArrowRight size={16} />
+                    </button>
                   </div>
                 </div>
               ))}
 
-              <h4 className="text-muted text-sm uppercase mb-3 mt-6">Medium</h4>
-              {data.needsReview.map(r => (
-                <div key={r.id} className="task-item" style={{ borderLeft: '3px solid var(--warning)', cursor: 'pointer' }} onClick={() => navigate(`/app/reconciliation/${r.id}?type=ambiguous`)}>
-                  <div className="flex items-center gap-3">
-                    <AlertCircle size={18} color="var(--warning)" />
-                    <div>
-                      <div className="font-medium">{r.description}</div>
-                      <div className="text-muted text-sm">Transaction nature unclear</div>
+              {data.needsReview.length > 0 && (
+                <div className="mb-8">
+                  <h4 className="text-muted text-sm uppercase mb-4 tracking-widest">Ambiguous Records</h4>
+                  {data.needsReview.map(r => (
+                    <div key={r.id} style={{ borderBottom: '1px solid var(--border)', padding: '1.5rem 0', display: 'flex', alignItems: 'center', justifyContent: 'space-between', cursor: 'pointer' }} onClick={() => navigate(`/app/reconciliation/${r.id}?type=ambiguous`)}>
+                      <div className="flex items-center gap-4">
+                        <AlertCircle size={20} color="var(--warning)" />
+                        <div>
+                          <div className="font-medium text-strong" style={{ fontSize: '1.125rem' }}>{r.description}</div>
+                          <div className="text-muted text-sm">Transaction nature unclear</div>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2 text-sm font-medium" style={{ color: 'var(--text-main)' }}>
+                        Review manually <ArrowRight size={16} />
+                      </div>
                     </div>
-                  </div>
-                  <div className="flex items-center gap-2 text-sm font-medium" style={{ color: 'var(--accent)' }}>
-                    Review <ArrowRight size={16} />
-                  </div>
+                  ))}
                 </div>
-              ))}
+              )}
 
-              <h4 className="text-muted text-sm uppercase mb-3 mt-6">Completed</h4>
-              {data.matched.filter(m => m.isReviewed).map(m => (
-                <div key={m.bankRecord.id} className="task-item" style={{ background: 'var(--bg-main)' }}>
-                  <div className="flex items-center gap-3">
-                    <CheckCircle size={18} color="var(--success)" />
-                    <div className="text-muted font-medium">{m.bankRecord.category} reviewed and reconciled</div>
-                  </div>
+              {(data.bankOnly.length > 0 || data.aisOnly.length > 0) && (
+                <div className="mb-8">
+                  <h4 className="text-muted text-sm uppercase mb-4 tracking-widest">Unmatched Records</h4>
+                  {[...data.bankOnly, ...data.aisOnly].map((r) => (
+                    <div key={r.id} style={{ borderBottom: '1px solid var(--border)', padding: '1.5rem 0', display: 'flex', alignItems: 'center', justifyContent: 'space-between', cursor: 'pointer' }} onClick={() => navigate(`/app/reconciliation/${r.id}?type=unmatched`)}>
+                      <div className="flex items-center gap-4">
+                        <AlertCircle size={20} color="var(--border)" />
+                        <div>
+                          <div className="font-medium text-strong" style={{ fontSize: '1.125rem' }}>{r.description}</div>
+                          <div className="text-muted text-sm">Found in only one source</div>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2 text-sm font-medium" style={{ color: 'var(--text-main)' }}>
+                        Review reason <ArrowRight size={16} />
+                      </div>
+                    </div>
+                  ))}
                 </div>
-              ))}
-              <div className="task-item" style={{ background: 'var(--bg-main)' }}>
-                <div className="flex items-center gap-3">
-                  <CheckCircle size={18} color="var(--success)" />
-                  <div className="text-muted font-medium">Auto-matched records ({data.matched.filter(m => !m.isReviewed).length})</div>
+              )}
+            </div>
+          )}
+
+          {data.matched.length > 0 && (
+            <div className="mt-8 pt-8" style={{ borderTop: '1px solid var(--border)' }}>
+              <h4 className="text-muted text-sm uppercase mb-4 tracking-widest">Completed Actions</h4>
+              <div className="flex flex-col gap-2">
+                {data.matched.filter(m => m.isReviewed).map(m => (
+                  <div key={m.bankRecord.id} className="flex items-center gap-3 text-muted text-sm">
+                    <CheckCircle size={16} />
+                    <span>{m.bankRecord.category} reviewed and safely reconciled.</span>
+                  </div>
+                ))}
+                <div className="flex items-center gap-3 text-muted text-sm">
+                  <CheckCircle size={16} />
+                  <span>Auto-matched records ({data.matched.filter(m => !m.isReviewed).length}) secured.</span>
                 </div>
               </div>
             </div>
@@ -341,66 +560,60 @@ function Dashboard() {
         </div>
 
         <div>
-          <div className="card" style={{ background: 'var(--bg-main)', border: '1px solid var(--border)' }}>
-            <h4 className="text-muted uppercase text-sm font-semibold mb-4 tracking-wide">Engineering Assurance</h4>
-            <div className="flex items-center gap-2 mb-2">
-              <ShieldCheck size={20} color="var(--primary)" />
-              <span className="font-medium">Codex-hardened engine</span>
+          <div style={{ border: '1px solid var(--border)', padding: '2rem', background: 'transparent' }}>
+            <h4 className="text-muted uppercase text-sm font-semibold mb-6 tracking-widest">Engineering Assurance</h4>
+            
+            <div className="flex items-start gap-3 mb-6">
+              <ShieldCheck size={20} color="var(--text-main)" style={{ marginTop: '2px' }} />
+              <div>
+                <span className="font-medium text-strong block mb-1">Codex-hardened engine</span>
+                <p className="text-muted text-sm leading-relaxed">Built and validated to never guess on ambiguous records.</p>
+              </div>
             </div>
-            <div className="flex items-center gap-2 mb-4 text-sm font-medium" style={{ color: 'var(--success)' }}>
-              <CheckCircle size={14} /> 15/15 reliability tests passing
+            
+            <div className="flex items-center gap-2 mb-6 text-sm font-medium" style={{ color: 'var(--text-main)' }}>
+              <CheckCircle size={16} /> 15/15 reliability tests passing
             </div>
-            <p className="text-sm italic mb-4 text-muted border-l-2 pl-3" style={{ borderColor: 'var(--primary)' }}>
-              "When the evidence is unclear, ReconcileAI does not guess."
-            </p>
-            <div className="flex flex-col items-center mb-4 text-sm font-medium text-muted">
-              <span>AMBIGUOUS</span>
+            
+            <div className="flex flex-col gap-2 mb-6 text-xs font-mono text-muted uppercase tracking-widest" style={{ borderLeft: '1px solid var(--border)', paddingLeft: '1rem' }}>
+              <span>Ambiguous Record</span>
               <span>↓</span>
-              <span>NEEDS REVIEW</span>
+              <span>Human Review</span>
               <span>↓</span>
-              <span>HUMAN DECISION</span>
+              <span>Safe Decision</span>
             </div>
+
             <button 
               className="btn btn-secondary w-full text-sm" 
+              style={{ background: 'transparent', border: '1px dashed var(--border)' }}
               onClick={() => setShowCodexPanel(!showCodexPanel)}
             >
               {showCodexPanel ? 'Hide Details' : 'Why this matters'}
             </button>
             
             {showCodexPanel && (
-              <div className="mt-4 pt-4 border-t text-sm text-muted" style={{ borderColor: 'var(--border)' }}>
-                <p className="mb-4">
-                  Codex was used during development to challenge reconciliation matching assumptions, uncover edge cases, and strengthen the deterministic engine with regression tests.
+              <div className="mt-6 pt-6 border-t text-sm text-muted" style={{ borderColor: 'var(--border)' }}>
+                <p className="mb-4 leading-relaxed">
+                  Codex was used during development to challenge reconciliation matching assumptions, uncover edge cases, and strengthen the deterministic engine.
                 </p>
-                <div className="mb-3">
-                  <strong className="text-foreground block mb-1">01 — Duplicate protection</strong>
-                  Prevents one transaction from incorrectly consuming another valid match.
-                </div>
-                <div className="mb-3">
-                  <strong className="text-foreground block mb-1">02 — Ambiguity protection</strong>
-                  When evidence is insufficient, ReconcileAI sends the record for review instead of inventing a match.
-                </div>
-                <div className="mb-3">
-                  <strong className="text-foreground block mb-1">03 — Safe text matching</strong>
-                  Strict word-boundary matching prevents accidental matches caused by unrelated words containing transaction keywords.<br/>
-                  <span className="font-mono mt-1 block opacity-75">PRINTING COST ≠ Interest</span>
-                  <span className="font-mono block opacity-75">GROUP INSURANCE ≠ UPI</span>
-                </div>
-                <div className="font-medium text-success flex items-center gap-1 mt-4">
-                  15/15 regression tests passing <CheckCircle size={12} />
-                </div>
+                <ul style={{ paddingLeft: '1.25rem', listStyleType: 'disc', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                  <li><strong>Duplicate protection:</strong> Prevents one transaction from incorrectly consuming another valid match.</li>
+                  <li><strong>Ambiguity protection:</strong> When evidence is insufficient, ReconcileAI sends the record for review instead of guessing.</li>
+                  <li><strong>Safe text matching:</strong> Strict word-boundary matching prevents accidental matches.</li>
+                </ul>
               </div>
             )}
           </div>
         </div>
       </div>
 
-      <div className="mt-12 pt-8 flex items-center justify-between" style={{ borderTop: '1px solid var(--border)' }}>
+      <div className="mt-16 pt-8 flex items-center justify-between" style={{ borderTop: '1px solid var(--border)' }}>
         <div className="text-muted text-sm font-medium">
           {actionRequired > 0 ? "Resolve priority actions to unlock tax computation." : "All records reconciled. You're ready."}
         </div>
         <button 
-          className="btn btn-primary" style={{ padding: '0.75rem 1.5rem' }}
+          className="btn" 
+          style={{ background: actionRequired > 0 ? 'var(--bg-card)' : 'var(--text-main)', color: actionRequired > 0 ? 'var(--text-muted)' : 'var(--bg-main)', border: actionRequired > 0 ? '1px solid var(--border)' : 'none', padding: '1rem 2rem', cursor: actionRequired > 0 ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center' }}
           disabled={actionRequired > 0}
           onClick={() => navigate('/app/tax-computation')}
         >
@@ -492,7 +705,7 @@ function DataSources() {
               <span className="text-sm font-medium text-accent flex items-center cursor-pointer" onClick={() => navigate('/app/transactions')}>View records <ChevronRight size={16}/></span>
             </div>
           ) : (
-            <button className="btn btn-secondary w-full text-sm py-1.5" onClick={connectBank}>Connect Demo Bank Statement</button>
+            <button className="btn btn-secondary w-full text-sm py-1.5" onClick={connectBank}>Connect demo PDF</button>
           )}
         </div>
         <div className="card">
@@ -512,7 +725,7 @@ function DataSources() {
               <span className="text-sm font-medium text-accent flex items-center cursor-pointer" onClick={() => navigate('/app/transactions')}>View records <ChevronRight size={16}/></span>
             </div>
           ) : (
-            <button className="btn btn-secondary w-full text-sm py-1.5" onClick={connectAis}>Connect Demo AIS</button>
+            <button className="btn btn-secondary w-full text-sm py-1.5" onClick={connectAis}>Connect Demo AIS / Income Tax Dept PDF</button>
           )}
         </div>
         <div className="card" style={{ borderStyle: 'dashed', background: 'var(--bg-main)' }}>
@@ -654,8 +867,13 @@ function ReviewDetail() {
           setAiText('AI service currently unavailable.');
         }
       } else {
-        const item = data.needsReview.find(r => r.id === id);
-        const matchedItem = data.matched.find(m => m.bankRecord.id === id);
+        let item;
+        if (type === 'unmatched') {
+          item = data.bankOnly.find(r => r.id === id) || data.aisOnly.find(r => r.id === id);
+        } else {
+          item = data.needsReview.find(r => r.id === id);
+        }
+        const matchedItem = data.matched.find(m => m.bankRecord && m.bankRecord.id === id);
 
         if (matchedItem && matchedItem.isReviewed) {
           setResolved(true);
@@ -710,8 +928,10 @@ function ReviewDetail() {
         
         <div className="flex items-center gap-3 mb-2">
           <h1>{type === 'mismatch' ? 'Interest Income' : 'Transaction'}</h1>
-          <span className={`badge ${type === 'mismatch' ? 'badge-danger' : 'badge-warning'}`}>
-            {type === 'mismatch' ? <><AlertTriangle size={12}/> Mismatch</> : <><AlertCircle size={12}/> Needs Review</>}
+          <span className={`badge ${type === 'mismatch' ? 'badge-danger' : (type === 'unmatched' ? 'badge-neutral' : 'badge-warning')}`}>
+            {type === 'mismatch' && <><AlertTriangle size={12}/> Mismatch</>}
+            {type === 'unmatched' && <><AlertCircle size={12}/> Unmatched</>}
+            {type === 'ambiguous' && <><AlertCircle size={12}/> Needs Review</>}
           </span>
         </div>
       </div>
@@ -755,11 +975,14 @@ function ReviewDetail() {
         <h3 className="mb-4">What should you do?</h3>
         {type === 'mismatch' ? (
           <div className="flex gap-3">
-            <button className="btn btn-secondary" onClick={() => navigate('/app/documents')}>Review supporting document</button>
-            <button className="btn btn-primary" onClick={async () => {
+            <button className="btn btn-secondary" onClick={async () => {
               await fetch(`${BASE_API}/reconcile/${id}/review`, { method: 'POST' });
               setResolved(true);
-            }}>Mark as reviewed</button>
+            }}>Accept Bank amount: ₹{record.bankRecord.amount.toLocaleString()}</button>
+            <button className="btn btn-secondary" onClick={async () => {
+              await fetch(`${BASE_API}/reconcile/${id}/review`, { method: 'POST' });
+              setResolved(true);
+            }}>Accept AIS amount: ₹{record.aisRecord.amount.toLocaleString()}</button>
           </div>
         ) : (
           <div className="flex gap-3 flex-wrap">
@@ -904,12 +1127,18 @@ function SignIn() {
   };
 
   return (
-    <div className="public-layout flex items-center justify-center" style={{ minHeight: '100vh', padding: '2rem' }}>
+    <div className="public-layout flex items-center justify-center" style={{ minHeight: '100vh', padding: '2rem', position: 'relative' }}>
+      <div style={{ position: 'absolute', top: '2rem', left: '2rem' }}>
+        <button className="btn btn-secondary text-sm" style={{ padding: '0.375rem 0.75rem' }} onClick={() => navigate('/')}>
+          ← Back to ReconcileAI
+        </button>
+      </div>
       <div style={{ width: '100%', maxWidth: '440px' }}>
         <div className="flex items-center justify-center gap-3 mb-10">
           <Scale size={32} color="var(--primary)" />
           <h2 style={{ fontSize: '2rem', letterSpacing: '-0.5px', fontWeight: 600, margin: 0, padding: 0, lineHeight: 1 }}>ReconcileAI</h2>
         </div>
+
         
         <div className="card" style={{ padding: '2.5rem' }}>
           <h3 className="mb-6 text-center" style={{ fontSize: '1.25rem' }}>Welcome back</h3>
@@ -936,6 +1165,7 @@ function SignIn() {
 }
 
 function SignUp() {
+  const navigate = useNavigate();
   const [name, setName] = useState('');
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -947,7 +1177,12 @@ function SignUp() {
   };
 
   return (
-    <div className="public-layout flex items-center justify-center" style={{ minHeight: '100vh', padding: '2rem' }}>
+    <div className="public-layout flex items-center justify-center" style={{ minHeight: '100vh', padding: '2rem', position: 'relative' }}>
+      <div style={{ position: 'absolute', top: '2rem', left: '2rem' }}>
+        <button className="btn btn-secondary text-sm" style={{ padding: '0.375rem 0.75rem' }} onClick={() => navigate('/')}>
+          ← Back to ReconcileAI
+        </button>
+      </div>
       <div style={{ width: '100%', maxWidth: '440px' }}>
         <div className="flex items-center justify-center gap-3 mb-10">
           <Scale size={32} color="var(--primary)" />
@@ -993,7 +1228,7 @@ export default function App() {
     const u = { name };
     setUser(u);
     localStorage.setItem('auth_user', JSON.stringify(u));
-    navigate('/app');
+    navigate('/app/data-sources');
   };
 
   const logout = () => {
