@@ -149,11 +149,28 @@ function LandingPage() {
 
 function Dashboard() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [data, setData] = useState(null);
 
   useEffect(() => {
-    fetch(`${BASE_API}/reconcile`).then(res => res.json()).then(setData);
-  }, []);
+    let cancelled = false;
+
+    fetch(`${BASE_API}/reconcile`, { cache: 'no-store' })
+      .then(res => {
+        if (!res.ok) throw new Error(`Reconciliation request failed: ${res.status}`);
+        return res.json();
+      })
+      .then(nextData => {
+        if (!cancelled) setData(nextData);
+      })
+      .catch(error => {
+        if (!cancelled) console.error(error);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [location.key]);
 
   if (!data) return <AppLayout><div className="text-muted">Analyzing records...</div></AppLayout>;
 
@@ -191,9 +208,14 @@ function Dashboard() {
       <div>
         <h2 className="mb-4">What needs your attention?</h2>
         {actionRequired === 0 ? (
-          <div className="card flex items-center gap-3">
-            <CheckCircle color="var(--success)" /> 
-            <span className="font-medium">You are Tax-Ready! No discrepancies found.</span>
+          <div className="card flex items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <CheckCircle color="var(--success)" />
+              <span className="font-medium">You are Tax-Ready! No discrepancies found.</span>
+            </div>
+            <button className="btn btn-primary" onClick={() => navigate('/app/tax-computation')}>
+              Proceed to Tax Computation <ArrowRight size={16} />
+            </button>
           </div>
         ) : (
           <div>
@@ -361,7 +383,7 @@ function DataSources() {
       </div>
 
       <div className="mt-12 pt-8 text-right" style={{ borderTop: '1px solid var(--border)' }}>
-        <button className="btn btn-primary" style={{ padding: '0.75rem 1.5rem' }} onClick={() => navigate('/app')}>
+        <button className="btn btn-primary" style={{ padding: '0.75rem 1.5rem' }} onClick={() => navigate('/app', { state: { reconciliationRun: Date.now() } })}>
           Run Reconciliation Engine <ArrowRight size={16} style={{ marginLeft: '0.5rem' }} />
         </button>
       </div>
