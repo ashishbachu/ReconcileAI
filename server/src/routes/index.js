@@ -31,7 +31,7 @@ router.get('/reconcile', (req, res) => {
 
   result.needsReview.forEach(item => {
     if (reviewedIds.has(item.id)) {
-       finalResult.matched.push({bankRecord: item, aisRecord: null, status: 'MATCHED', isReviewed: true});
+       finalResult.bankOnly.push({...item, status: 'BANK_ONLY', isReviewed: true});
     } else {
        finalResult.needsReview.push(item);
     }

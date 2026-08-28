@@ -1,24 +1,49 @@
-import { useState, useEffect } from 'react';
-import { Routes, Route, useNavigate, useParams, Link, useLocation } from 'react-router-dom';
+import { useState, useEffect, createContext, useContext } from 'react';
+import { Routes, Route, useNavigate, useParams, Link, useLocation, Navigate } from 'react-router-dom';
 import { 
   ShieldCheck, CheckCircle, AlertCircle, ArrowRight, 
   LayoutDashboard, List, Database, PieChart, Calculator,
   FileText, CheckSquare, Settings, Download, 
-  User, Sparkles, Building, Landmark, ChevronRight, AlertTriangle
+  User, Sparkles, Building, Landmark, ChevronRight, AlertTriangle, Scale,
+  Sun, Moon
 } from 'lucide-react';
 
 const BASE_API = 'http://localhost:3000/api';
 
+const AuthContext = createContext(null);
+
+function ThemeToggle() {
+  const [theme, setTheme] = useState(localStorage.getItem('theme') || 'light');
+  
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('theme', theme);
+  }, [theme]);
+
+  const toggle = () => setTheme(t => t === 'light' ? 'dark' : 'light');
+
+  return (
+    <button className="btn btn-secondary" style={{ padding: '0.5rem', borderRadius: '50%' }} onClick={toggle} title="Toggle Theme">
+      {theme === 'light' ? <Moon size={16} /> : <Sun size={16} />}
+    </button>
+  );
+}
+
 // --- LAYOUTS ---
 function AppLayout({ children }) {
+  const { user, logout } = useContext(AuthContext);
   const location = useLocation();
   const isActive = (path) => location.pathname === path ? 'active' : '';
 
   return (
     <div className="app-layout">
       <aside className="sidebar">
-        <div style={{ marginBottom: '1.5rem' }}>
-          <h2 style={{ fontSize: '1.5rem', letterSpacing: '-0.5px' }}>KaroFile</h2>
+        <div style={{ marginBottom: '1.5rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <div className="flex items-center gap-2">
+            <Scale size={24} color="var(--primary)" />
+            <h2 style={{ fontSize: '1.5rem', letterSpacing: '-0.5px' }}>ReconcileAI</h2>
+          </div>
+          <ThemeToggle />
         </div>
         <nav style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem', flex: 1 }}>
           <div className="text-muted text-sm font-semibold uppercase mb-2 mt-4" style={{ letterSpacing: '0.5px' }}>Overview</div>
@@ -55,11 +80,11 @@ function AppLayout({ children }) {
               <User size={16} className="text-muted" />
             </div>
             <div>
-              <div className="font-medium text-sm">Arjun Mehta</div>
+              <div className="font-medium text-sm">{user?.name || 'User'}</div>
               <div className="text-muted" style={{ fontSize: '0.75rem' }}>FY 2025–26</div>
             </div>
           </div>
-          <button className="btn btn-secondary" style={{ width: '100%', justifyContent: 'flex-start' }} onClick={() => window.location.href='/'}>
+          <button className="btn btn-secondary" style={{ width: '100%', justifyContent: 'flex-start' }} onClick={logout}>
             <Settings size={16} /> Exit Workspace
           </button>
         </div>
@@ -79,9 +104,12 @@ function LandingPage() {
   const navigate = useNavigate();
   return (
     <div className="public-layout">
-      <header className="flex justify-between items-center" style={{ padding: '1.5rem 4rem', borderBottom: '1px solid var(--border)', background: 'white' }}>
-        <h2 style={{ fontSize: '1.5rem', letterSpacing: '-0.5px' }}>KaroFile</h2>
-        <button className="btn btn-primary" onClick={() => navigate('/app/data-sources')}>Try Demo</button>
+      <header className="flex justify-between items-center" style={{ padding: '1.5rem 4rem', borderBottom: '1px solid var(--border)', background: 'var(--bg-card)' }}>
+        <div className="flex items-center gap-2">
+          <Scale size={24} color="var(--primary)" />
+          <h2 style={{ fontSize: '1.5rem', letterSpacing: '-0.5px' }}>ReconcileAI</h2>
+        </div>
+        <ThemeToggle />
       </header>
       
       <main style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '6rem 2rem', textAlign: 'center' }}>
@@ -92,15 +120,15 @@ function LandingPage() {
           Bring your financial information together, find discrepancies, and understand what needs your attention before filing your taxes.
         </p>
         <div className="flex gap-4 mb-12">
-          <button className="btn btn-primary" onClick={() => navigate('/app/data-sources')}>
-            Try Demo <ArrowRight size={16} />
+          <button className="btn btn-primary" onClick={() => navigate('/signup')}>
+            Try Now <ArrowRight size={16} />
           </button>
-          <button className="btn btn-secondary" onClick={() => window.scrollTo(0, document.body.scrollHeight)}>See how it works</button>
+          <button className="btn btn-secondary" onClick={() => navigate('/signin')}>Sign in</button>
         </div>
 
         {/* Realistic Dashboard Preview */}
         <div className="card" style={{ maxWidth: '900px', width: '100%', textAlign: 'left', padding: '0', overflow: 'hidden' }}>
-          <div style={{ padding: '2rem', borderBottom: '1px solid var(--border)', background: '#fafafa' }}>
+          <div style={{ padding: '2rem', borderBottom: '1px solid var(--border)', background: 'var(--bg-main)' }}>
             <h3 className="mb-2">Reconciliation Overview</h3>
             <div className="grid-4 mt-4">
               <div>
@@ -149,6 +177,7 @@ function LandingPage() {
 
 function Dashboard() {
   const navigate = useNavigate();
+  const { user } = useContext(AuthContext);
   const [data, setData] = useState(null);
 
   useEffect(() => {
@@ -160,11 +189,13 @@ function Dashboard() {
   const totalRecords = data.matched.length + data.mismatched.length + data.needsReview.length + data.bankOnly.length + data.aisOnly.length;
   const actionRequired = data.mismatched.length + data.needsReview.length;
 
+  const firstName = user?.name ? user.name.split(' ')[0] : 'User';
+
   return (
     <AppLayout>
       <header className="flex justify-between items-end mb-8">
         <div>
-          <h1 className="mb-2">Good morning, Arjun.</h1>
+          <h1 className="mb-2">Good morning, {firstName}.</h1>
           <p className="text-muted">FY 2025–26 • Preparation progress: 72%</p>
         </div>
       </header>
@@ -231,14 +262,14 @@ function Dashboard() {
 
             <h4 className="text-muted text-sm uppercase mb-3 mt-6">Completed</h4>
             {data.matched.filter(m => m.isReviewed).map(m => (
-              <div key={m.bankRecord.id} className="task-item" style={{ background: '#fafafa' }}>
+              <div key={m.bankRecord.id} className="task-item" style={{ background: 'var(--bg-main)' }}>
                 <div className="flex items-center gap-3">
                   <CheckCircle size={18} color="var(--success)" />
                   <div className="text-muted font-medium">{m.bankRecord.category} reviewed and reconciled</div>
                 </div>
               </div>
             ))}
-            <div className="task-item" style={{ background: '#fafafa' }}>
+            <div className="task-item" style={{ background: 'var(--bg-main)' }}>
               <div className="flex items-center gap-3">
                 <CheckCircle size={18} color="var(--success)" />
                 <div className="text-muted font-medium">Auto-matched records ({data.matched.filter(m => !m.isReviewed).length})</div>
@@ -265,8 +296,12 @@ function Dashboard() {
 }
 
 function ProfileChecklist() {
+  const navigate = useNavigate();
   return (
     <AppLayout>
+      <button className="btn btn-secondary text-sm mb-6" style={{ padding: '0.375rem 0.75rem' }} onClick={() => navigate('/app')}>
+        ← Back to Dashboard
+      </button>
       <div className="mb-8">
         <h1 className="mb-2">Your tax filing checklist</h1>
         <p className="text-muted">72% complete</p>
@@ -310,6 +345,9 @@ function DataSources() {
   const navigate = useNavigate();
   return (
     <AppLayout>
+      <button className="btn btn-secondary text-sm mb-6" style={{ padding: '0.375rem 0.75rem' }} onClick={() => navigate('/app')}>
+        ← Back to Dashboard
+      </button>
       <div className="mb-8">
         <h1 className="mb-2">Data Sources</h1>
         <p className="text-muted">Manage your connected financial and tax records.</p>
@@ -347,7 +385,7 @@ function DataSources() {
             <span className="text-sm font-medium text-accent flex items-center cursor-pointer" onClick={() => navigate('/app/transactions')}>View records <ChevronRight size={16}/></span>
           </div>
         </div>
-        <div className="card" style={{ borderStyle: 'dashed', background: '#fafafa' }}>
+        <div className="card" style={{ borderStyle: 'dashed', background: 'var(--bg-main)' }}>
           <div className="flex justify-between items-center mb-6">
             <div className="flex items-center gap-3">
               <PieChart size={20} className="text-muted" />
@@ -371,6 +409,7 @@ function DataSources() {
 
 function TransactionExplorer() {
   const [data, setData] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetch(`${BASE_API}/reconcile`).then(res => res.json()).then(setData);
@@ -387,6 +426,9 @@ function TransactionExplorer() {
 
   return (
     <AppLayout>
+      <button className="btn btn-secondary text-sm mb-6" style={{ padding: '0.375rem 0.75rem' }} onClick={() => navigate('/app')}>
+        ← Back to Dashboard
+      </button>
       <div className="mb-6 flex justify-between items-end">
         <div>
           <h1 className="mb-1">Reconciliation Explorer</h1>
@@ -520,8 +562,8 @@ function ReviewDetail() {
   return (
     <AppLayout>
       <div className="mb-6">
-        <button className="btn btn-secondary text-sm mb-6" style={{ padding: '0.375rem 0.75rem' }} onClick={() => navigate(-1)}>
-          ← Go back
+        <button className="btn btn-secondary text-sm mb-6" style={{ padding: '0.375rem 0.75rem' }} onClick={() => navigate('/app')}>
+          ← Back to Dashboard
         </button>
         
         <div className="flex items-center gap-3 mb-2">
@@ -607,8 +649,12 @@ function ReviewDetail() {
 
 
 function DocumentCenter() {
+  const navigate = useNavigate();
   return (
     <AppLayout>
+      <button className="btn btn-secondary text-sm mb-6" style={{ padding: '0.375rem 0.75rem' }} onClick={() => navigate('/app')}>
+        ← Back to Dashboard
+      </button>
       <h1 className="mb-2">Your documents</h1>
       <p className="text-muted mb-8">Secure digital vault for your tax documents.</p>
       <div className="grid-2">
@@ -640,8 +686,12 @@ function DocumentCenter() {
 
 
 function IncomeOverview() {
+  const navigate = useNavigate();
   return (
     <AppLayout>
+      <button className="btn btn-secondary text-sm mb-6" style={{ padding: '0.375rem 0.75rem' }} onClick={() => navigate('/app')}>
+        ← Back to Dashboard
+      </button>
       <h1 className="mb-2">Your income</h1>
       <p className="text-muted mb-8">FY 2025–26</p>
       <div className="grid-2">
@@ -661,8 +711,12 @@ function IncomeOverview() {
 }
 
 function TaxComputation() {
+  const navigate = useNavigate();
   return (
     <AppLayout>
+      <button className="btn btn-secondary text-sm mb-6" style={{ padding: '0.375rem 0.75rem' }} onClick={() => navigate('/app')}>
+        ← Back to Dashboard
+      </button>
       <h1 className="mb-2">Tax computation</h1>
       <p className="text-muted mb-8">FY 2025–26 demonstration estimate.</p>
       
@@ -685,19 +739,137 @@ function TaxComputation() {
   );
 }
 
-export default function App() {
-  return (
-    <Routes>
-      <Route path="/" element={<LandingPage />} />
-      <Route path="/app" element={<Dashboard />} />
-      <Route path="/app/profile" element={<ProfileChecklist />} />
-      <Route path="/app/data-sources" element={<DataSources />} />
-      <Route path="/app/transactions" element={<TransactionExplorer />} />
-      <Route path="/app/documents" element={<DocumentCenter />} />
+function RequireAuth({ children }) {
+  const { user } = useContext(AuthContext);
+  if (!user) return <Navigate to="/signin" replace />;
+  return children;
+}
 
-      <Route path="/app/reconciliation/:id" element={<ReviewDetail />} />
-      <Route path="/app/income" element={<IncomeOverview />} />
-      <Route path="/app/tax-computation" element={<TaxComputation />} />
-    </Routes>
+function SignIn() {
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const { login } = useContext(AuthContext);
+  
+  const handleSignIn = (e) => {
+    e.preventDefault();
+    login(username || 'Demo User');
+  };
+
+  return (
+    <div className="public-layout flex items-center justify-center" style={{ minHeight: '100vh', padding: '2rem' }}>
+      <div style={{ width: '100%', maxWidth: '440px' }}>
+        <div className="flex items-center justify-center gap-3 mb-10">
+          <Scale size={32} color="var(--primary)" />
+          <h2 style={{ fontSize: '2rem', letterSpacing: '-0.5px', fontWeight: 600, margin: 0, padding: 0, lineHeight: 1 }}>ReconcileAI</h2>
+        </div>
+        
+        <div className="card" style={{ padding: '2.5rem' }}>
+          <h3 className="mb-6 text-center" style={{ fontSize: '1.25rem' }}>Welcome back</h3>
+          <form onSubmit={handleSignIn}>
+            <div className="mb-5">
+              <label className="text-sm font-medium mb-2" style={{ display: 'block' }}>Username</label>
+              <input required type="text" value={username} onChange={e => setUsername(e.target.value)} style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '8px', border: '1px solid var(--border)', background: 'var(--bg-main)', color: 'var(--text-main)', fontSize: '0.9375rem' }} placeholder="johndoe" />
+            </div>
+            <div className="mb-8">
+              <label className="text-sm font-medium mb-2" style={{ display: 'block' }}>Password</label>
+              <input required type="password" value={password} onChange={e => setPassword(e.target.value)} style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '8px', border: '1px solid var(--border)', background: 'var(--bg-main)', color: 'var(--text-main)', fontSize: '0.9375rem' }} placeholder="••••••••" />
+            </div>
+            <button type="submit" className="btn btn-primary w-full" style={{ width: '100%', padding: '0.75rem', fontSize: '1rem', fontWeight: 500, marginBottom: '1.5rem' }}>Sign In</button>
+          </form>
+          <p className="text-center text-sm text-muted">Don't have an account? <Link to="/signup" style={{ color: 'var(--accent)', fontWeight: 500 }}>Sign up</Link></p>
+        </div>
+        
+        <div className="text-muted text-sm mt-6 flex items-center justify-center gap-1" style={{ fontSize: '0.8rem' }}>
+          <ShieldCheck size={14}/> Prototype account — no real personal data is required.
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function SignUp() {
+  const [name, setName] = useState('');
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const { login } = useContext(AuthContext);
+
+  const handleSignUp = (e) => {
+    e.preventDefault();
+    login(name || username || 'Demo User');
+  };
+
+  return (
+    <div className="public-layout flex items-center justify-center" style={{ minHeight: '100vh', padding: '2rem' }}>
+      <div style={{ width: '100%', maxWidth: '440px' }}>
+        <div className="flex items-center justify-center gap-3 mb-10">
+          <Scale size={32} color="var(--primary)" />
+          <h2 style={{ fontSize: '2rem', letterSpacing: '-0.5px', fontWeight: 600, margin: 0, padding: 0, lineHeight: 1 }}>ReconcileAI</h2>
+        </div>
+        
+        <div className="card" style={{ padding: '2.5rem' }}>
+          <h3 className="mb-6 text-center" style={{ fontSize: '1.25rem' }}>Create your ReconcileAI account</h3>
+          <form onSubmit={handleSignUp}>
+            <div className="mb-5">
+              <label className="text-sm font-medium mb-2" style={{ display: 'block' }}>Full Name</label>
+              <input required type="text" value={name} onChange={e => setName(e.target.value)} style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '8px', border: '1px solid var(--border)', background: 'var(--bg-main)', color: 'var(--text-main)', fontSize: '0.9375rem' }} placeholder="John Doe" />
+            </div>
+            <div className="mb-5">
+              <label className="text-sm font-medium mb-2" style={{ display: 'block' }}>Username</label>
+              <input required type="text" value={username} onChange={e => setUsername(e.target.value)} style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '8px', border: '1px solid var(--border)', background: 'var(--bg-main)', color: 'var(--text-main)', fontSize: '0.9375rem' }} placeholder="johndoe" />
+            </div>
+            <div className="mb-8">
+              <label className="text-sm font-medium mb-2" style={{ display: 'block' }}>Password</label>
+              <input required type="password" value={password} onChange={e => setPassword(e.target.value)} style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '8px', border: '1px solid var(--border)', background: 'var(--bg-main)', color: 'var(--text-main)', fontSize: '0.9375rem' }} placeholder="••••••••" />
+            </div>
+            <button type="submit" className="btn btn-primary w-full" style={{ width: '100%', padding: '0.75rem', fontSize: '1rem', fontWeight: 500, marginBottom: '1.5rem' }}>Sign Up</button>
+          </form>
+          <p className="text-center text-sm text-muted">Already have an account? <Link to="/signin" style={{ color: 'var(--accent)', fontWeight: 500 }}>Sign in</Link></p>
+        </div>
+        
+        <div className="text-muted text-sm mt-6 flex items-center justify-center gap-1" style={{ fontSize: '0.8rem' }}>
+          <ShieldCheck size={14}/> Prototype account — no real personal data is required.
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default function App() {
+  const navigate = useNavigate();
+  const [user, setUser] = useState(() => {
+    const saved = localStorage.getItem('auth_user');
+    return saved ? JSON.parse(saved) : null;
+  });
+
+  const login = (name) => {
+    const u = { name };
+    setUser(u);
+    localStorage.setItem('auth_user', JSON.stringify(u));
+    navigate('/app');
+  };
+
+  const logout = () => {
+    setUser(null);
+    localStorage.removeItem('auth_user');
+    navigate('/');
+  };
+
+  return (
+    <AuthContext.Provider value={{ user, login, logout }}>
+      <Routes>
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/signin" element={<SignIn />} />
+        <Route path="/signup" element={<SignUp />} />
+        
+        <Route path="/app" element={<RequireAuth><Dashboard /></RequireAuth>} />
+        <Route path="/app/profile" element={<RequireAuth><ProfileChecklist /></RequireAuth>} />
+        <Route path="/app/data-sources" element={<RequireAuth><DataSources /></RequireAuth>} />
+        <Route path="/app/transactions" element={<RequireAuth><TransactionExplorer /></RequireAuth>} />
+        <Route path="/app/documents" element={<RequireAuth><DocumentCenter /></RequireAuth>} />
+        <Route path="/app/reconciliation/:id" element={<RequireAuth><ReviewDetail /></RequireAuth>} />
+        <Route path="/app/income" element={<RequireAuth><IncomeOverview /></RequireAuth>} />
+        <Route path="/app/tax-computation" element={<RequireAuth><TaxComputation /></RequireAuth>} />
+      </Routes>
+    </AuthContext.Provider>
   );
 }
