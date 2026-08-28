@@ -396,7 +396,7 @@ function Dashboard() {
   }
 
   const totalRecords = data.matched.length + data.mismatched.length + data.needsReview.length + data.bankOnly.length + data.aisOnly.length;
-  const actionRequired = data.mismatched.length + data.needsReview.length + data.bankOnly.length + data.aisOnly.length;
+  const actionRequired = data.mismatched.length + data.needsReview.length + data.bankOnly.filter(r => !r.isReviewed).length + data.aisOnly.filter(r => !r.isReviewed).length;
 
   const firstName = user?.name ? user.name.split(' ')[0] : 'User';
 
@@ -518,10 +518,10 @@ function Dashboard() {
                 </div>
               )}
 
-              {(data.bankOnly.length > 0 || data.aisOnly.length > 0) && (
+              {([...data.bankOnly, ...data.aisOnly].filter(r => !r.isReviewed).length > 0) && (
                 <div className="mb-8">
                   <h4 className="text-muted text-sm uppercase mb-4 tracking-widest">Unmatched Records</h4>
-                  {[...data.bankOnly, ...data.aisOnly].map((r) => (
+                  {[...data.bankOnly, ...data.aisOnly].filter(r => !r.isReviewed).map((r) => (
                     <div key={r.id} style={{ borderBottom: '1px solid var(--border)', padding: '1.5rem 0', display: 'flex', alignItems: 'center', justifyContent: 'space-between', cursor: 'pointer' }} onClick={() => navigate(`/app/reconciliation/${r.id}?type=unmatched`)}>
                       <div className="flex items-center gap-4">
                         <AlertCircle size={20} color="var(--border)" />
@@ -548,6 +548,12 @@ function Dashboard() {
                   <div key={m.bankRecord.id} className="flex items-center gap-3 text-muted text-sm">
                     <CheckCircle size={16} />
                     <span>{m.bankRecord.category} reviewed and safely reconciled.</span>
+                  </div>
+                ))}
+                {[...data.bankOnly, ...data.aisOnly].filter(r => r.isReviewed).map(r => (
+                  <div key={r.id} className="flex items-center gap-3 text-muted text-sm">
+                    <CheckCircle size={16} />
+                    <span>{r.description} manually reviewed.</span>
                   </div>
                 ))}
                 <div className="flex items-center gap-3 text-muted text-sm">
