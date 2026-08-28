@@ -1,0 +1,38 @@
+[
+  {
+    "id": "a_2001",
+    "source": "AIS",
+    "financialYear": "2025-26",
+    "category": "Salary",
+    "description": "ABC TECH SOLUTIONS",
+    "amount": 900000,
+    "recordType": "SFT-015"
+  },
+  {
+    "id": "a_2002",
+    "source": "AIS",
+    "financialYear": "2025-26",
+    "category": "Interest",
+    "description": "HDFC BANK LTD",
+    "amount": 26400,
+    "recordType": "SFT-016"
+  },
+  {
+    "id": "a_2003",
+    "source": "AIS",
+    "financialYear": "2025-26",
+    "category": "Dividend",
+    "description": "RELIANCE INDUSTRIES LTD",
+    "amount": 12500,
+    "recordType": "SFT-017"
+  },
+  {
+    "id": "a_2004",
+    "source": "AIS",
+    "financialYear": "2025-26",
+    "category": "Interest",
+    "description": "POST OFFICE SAVINGS",
+    "amount": 10000,
+    "recordType": "SFT-016"
+  }
+]
