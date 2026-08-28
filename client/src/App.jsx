@@ -3,7 +3,7 @@ import { Routes, Route, useNavigate, useParams, Link, useLocation } from 'react-
 import { 
   ShieldCheck, CheckCircle, AlertCircle, ArrowRight, 
   LayoutDashboard, List, Database, PieChart, Calculator,
-  FileText, CheckSquare, Settings, CreditCard, Download, 
+  FileText, CheckSquare, Settings, Download, 
   User, Sparkles, Building, Landmark, ChevronRight, AlertTriangle
 } from 'lucide-react';
 
@@ -34,13 +34,10 @@ function AppLayout({ children }) {
             <Database size={18} /> Data Sources
           </Link>
           <Link to="/app/transactions" className={`nav-link ${isActive('/app/transactions')}`}>
-            <CreditCard size={18} /> Transactions
+            <List size={18} /> Reconciliation Explorer
           </Link>
           <Link to="/app/documents" className={`nav-link ${isActive('/app/documents')}`}>
             <FileText size={18} /> Documents
-          </Link>
-          <Link to="/app/reconciliation" className={`nav-link ${isActive('/app/reconciliation')}`}>
-            <List size={18} /> Reconciliation
           </Link>
 
           <div className="text-muted text-sm font-semibold uppercase mb-2 mt-6" style={{ letterSpacing: '0.5px' }}>Filing</div>
@@ -84,7 +81,7 @@ function LandingPage() {
     <div className="public-layout">
       <header className="flex justify-between items-center" style={{ padding: '1.5rem 4rem', borderBottom: '1px solid var(--border)', background: 'white' }}>
         <h2 style={{ fontSize: '1.5rem', letterSpacing: '-0.5px' }}>KaroFile</h2>
-        <button className="btn btn-primary" onClick={() => navigate('/app')}>Try Demo</button>
+        <button className="btn btn-primary" onClick={() => navigate('/app/data-sources')}>Try Demo</button>
       </header>
       
       <main style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '6rem 2rem', textAlign: 'center' }}>
@@ -95,7 +92,7 @@ function LandingPage() {
           Bring your financial information together, find discrepancies, and understand what needs your attention before filing your taxes.
         </p>
         <div className="flex gap-4 mb-12">
-          <button className="btn btn-primary" onClick={() => navigate('/app')}>
+          <button className="btn btn-primary" onClick={() => navigate('/app/data-sources')}>
             Try Demo <ArrowRight size={16} />
           </button>
           <button className="btn btn-secondary" onClick={() => window.scrollTo(0, document.body.scrollHeight)}>See how it works</button>
@@ -233,14 +230,35 @@ function Dashboard() {
             ))}
 
             <h4 className="text-muted text-sm uppercase mb-3 mt-6">Completed</h4>
+            {data.matched.filter(m => m.isReviewed).map(m => (
+              <div key={m.bankRecord.id} className="task-item" style={{ background: '#fafafa' }}>
+                <div className="flex items-center gap-3">
+                  <CheckCircle size={18} color="var(--success)" />
+                  <div className="text-muted font-medium">{m.bankRecord.category} reviewed and reconciled</div>
+                </div>
+              </div>
+            ))}
             <div className="task-item" style={{ background: '#fafafa' }}>
               <div className="flex items-center gap-3">
                 <CheckCircle size={18} color="var(--success)" />
-                <div className="text-muted font-medium">Salary information reconciled</div>
+                <div className="text-muted font-medium">Auto-matched records ({data.matched.filter(m => !m.isReviewed).length})</div>
               </div>
             </div>
           </div>
         )}
+      </div>
+
+      <div className="mt-12 pt-8 flex items-center justify-between" style={{ borderTop: '1px solid var(--border)' }}>
+        <div className="text-muted text-sm font-medium">
+          {actionRequired > 0 ? "Resolve priority actions to unlock tax computation." : "All records reconciled. You're ready."}
+        </div>
+        <button 
+          className="btn btn-primary" style={{ padding: '0.75rem 1.5rem' }}
+          disabled={actionRequired > 0}
+          onClick={() => navigate('/app/tax-computation')}
+        >
+          Proceed to Tax Computation <ArrowRight size={16} style={{ marginLeft: '0.5rem' }} />
+        </button>
       </div>
     </AppLayout>
   );
@@ -341,6 +359,12 @@ function DataSources() {
           <button className="btn btn-secondary w-full text-sm py-1.5" disabled>Integration pending</button>
         </div>
       </div>
+
+      <div className="mt-12 pt-8 text-right" style={{ borderTop: '1px solid var(--border)' }}>
+        <button className="btn btn-primary" style={{ padding: '0.75rem 1.5rem' }} onClick={() => navigate('/app')}>
+          Run Reconciliation Engine <ArrowRight size={16} style={{ marginLeft: '0.5rem' }} />
+        </button>
+      </div>
     </AppLayout>
   );
 }
@@ -365,8 +389,8 @@ function TransactionExplorer() {
     <AppLayout>
       <div className="mb-6 flex justify-between items-end">
         <div>
-          <h1 className="mb-1">Transactions</h1>
-          <p className="text-muted">{allBankRecords.length} records</p>
+          <h1 className="mb-1">Reconciliation Explorer</h1>
+          <p className="text-muted">Review all records and their reconciliation status.</p>
         </div>
         <div className="flex gap-2">
           <button className="btn btn-secondary text-sm">All</button>
@@ -383,7 +407,7 @@ function TransactionExplorer() {
               <th>DESCRIPTION</th>
               <th>CATEGORY</th>
               <th style={{ textAlign: 'right' }}>AMOUNT</th>
-              <th>STATUS</th>
+              <th>RECONCILIATION STATUS</th>
             </tr>
           </thead>
           <tbody>
@@ -416,7 +440,7 @@ function ReviewDetail() {
   const type = new URLSearchParams(window.location.search).get('type');
   
   const [record, setRecord] = useState(null);
-  const [aiText, setAiText] = useState('Generating explanation...');
+  const [aiText, setAiText] = useState('Analyzing discrepancy using AI...');
   const [resolved, setResolved] = useState(false);
 
   useEffect(() => {
@@ -487,7 +511,7 @@ function ReviewDetail() {
           <CheckCircle size={48} color="var(--success)" style={{ margin: '0 auto 1.5rem' }} />
           <h2 className="mb-2">Transaction Reviewed</h2>
           <p className="text-muted mb-6">The reconciliation status has been updated successfully.</p>
-          <button className="btn btn-primary w-full" onClick={() => navigate('/app')}>Return to Dashboard</button>
+          <button className="btn btn-primary w-full" onClick={() => navigate('/app')}>Back to Dashboard to continue →</button>
         </div>
       </AppLayout>
     );
@@ -613,22 +637,7 @@ function DocumentCenter() {
   );
 }
 
-function ReconciliationList() {
-  const navigate = useNavigate();
-  return <AppLayout>
-    <div className="mb-8">
-      <h1 className="mb-2">Financial reconciliation</h1>
-      <p className="text-muted">See what matches, what doesn't, and what needs your attention.</p>
-    </div>
-    <div className="card">
-      <div className="flex justify-between items-center mb-4 pb-4 border-b">
-         <h3>All Records</h3>
-         <button className="btn btn-secondary text-sm" onClick={()=>navigate('/app')}>Back to Dashboard</button>
-      </div>
-      <p className="text-muted">Refer to the Dashboard or Transaction Explorer for detailed filtering.</p>
-    </div>
-  </AppLayout>;
-}
+
 
 function IncomeOverview() {
   return (
@@ -666,7 +675,11 @@ function TaxComputation() {
         </div>
         <div className="flex justify-between py-2 mb-4"><span className="text-muted">Estimated tax (New Regime)</span><span className="metric-value">₹39,290</span></div>
         
-        <button className="btn btn-primary w-full py-3 mt-4" onClick={() => alert('Demo: Proceeding to ITR Preparation portal...')}>Continue to ITR Preparation</button>
+        <div className="text-muted text-sm mt-8 mb-4">
+          <ShieldCheck size={16} className="inline mr-1" />
+          <strong>Demo Note:</strong> In a live environment, this would securely transfer your reconciled data to a government-authorized filing portal.
+        </div>
+        <button className="btn btn-primary w-full py-3" onClick={() => alert('Demo: Proceeding to ITR Preparation portal...')}>Export to ITR Portal (Demo)</button>
       </div>
     </AppLayout>
   );
@@ -681,7 +694,7 @@ export default function App() {
       <Route path="/app/data-sources" element={<DataSources />} />
       <Route path="/app/transactions" element={<TransactionExplorer />} />
       <Route path="/app/documents" element={<DocumentCenter />} />
-      <Route path="/app/reconciliation" element={<ReconciliationList />} />
+
       <Route path="/app/reconciliation/:id" element={<ReviewDetail />} />
       <Route path="/app/income" element={<IncomeOverview />} />
       <Route path="/app/tax-computation" element={<TaxComputation />} />
