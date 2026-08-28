@@ -45,44 +45,47 @@ function reconcile(bankRecords, aisRecords) {
   const matchedBankIds = new Set();
   const matchedAisIds = new Set();
 
-  // Phase 1: Match Bank vs AIS
+  // Phase 1A: Exact Matches
   for (const bank of bankRecords) {
-    if (bank.type !== "CREDIT") continue; // Focus on income/credits for now
+    if (bank.type !== "CREDIT") continue;
 
-    let bestMatch = null;
-    let isExactAmount = false;
+    for (const ais of aisRecords) {
+      if (matchedAisIds.has(ais.id)) continue;
+
+      if (isSameCategory(bank, ais) && bank.amount === ais.amount) {
+        result.matched.push({ 
+          bankRecord: bank, 
+          aisRecord: ais, 
+          status: 'MATCHED' 
+        });
+        matchedBankIds.add(bank.id);
+        matchedAisIds.add(ais.id);
+        break; // Match found, move to next bank record
+      }
+    }
+  }
+
+  // Phase 1B: Amount Mismatches
+  for (const bank of bankRecords) {
+    if (bank.type !== "CREDIT") continue;
+    if (matchedBankIds.has(bank.id)) continue;
 
     for (const ais of aisRecords) {
       if (matchedAisIds.has(ais.id)) continue;
 
       if (isSameCategory(bank, ais)) {
-        bestMatch = ais;
-        if (bank.amount === ais.amount) {
-          isExactAmount = true;
-          break; // Stop at first perfect match
-        }
-      }
-    }
-
-    if (bestMatch) {
-      const difference = Math.abs(bank.amount - bestMatch.amount);
-      if (isExactAmount) {
-        result.matched.push({ 
-          bankRecord: bank, 
-          aisRecord: bestMatch, 
-          status: 'MATCHED' 
-        });
-      } else {
+        const difference = Math.abs(bank.amount - ais.amount);
         result.mismatched.push({ 
           bankRecord: bank, 
-          aisRecord: bestMatch, 
+          aisRecord: ais, 
           difference,
           reason: 'Amount differs',
           status: 'MISMATCH' 
         });
+        matchedBankIds.add(bank.id);
+        matchedAisIds.add(ais.id);
+        break; // Match found, move to next bank record
       }
-      matchedBankIds.add(bank.id);
-      matchedAisIds.add(bestMatch.id);
     }
   }
 

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Routes, Route, useNavigate, useParams, Link, useLocation } from 'react-router-dom';
 import { 
   ShieldCheck, CheckCircle, AlertCircle, ArrowRight, 
@@ -98,7 +98,7 @@ function LandingPage() {
           <button className="btn btn-primary" onClick={() => navigate('/app')}>
             Try Demo <ArrowRight size={16} />
           </button>
-          <button className="btn btn-secondary">See how it works</button>
+          <button className="btn btn-secondary" onClick={() => window.scrollTo(0, document.body.scrollHeight)}>See how it works</button>
         </div>
 
         {/* Realistic Dashboard Preview */}
@@ -289,6 +289,7 @@ function ProfileChecklist() {
 }
 
 function DataSources() {
+  const navigate = useNavigate();
   return (
     <AppLayout>
       <div className="mb-8">
@@ -309,7 +310,7 @@ function DataSources() {
               <p className="text-muted text-sm mb-1">Updated just now</p>
               <p className="font-medium text-sm">24 records</p>
             </div>
-            <span className="text-sm font-medium text-accent flex items-center cursor-pointer">View records <ChevronRight size={16}/></span>
+            <span className="text-sm font-medium text-accent flex items-center cursor-pointer" onClick={() => navigate('/app/transactions')}>View records <ChevronRight size={16}/></span>
           </div>
         </div>
         <div className="card">
@@ -325,7 +326,7 @@ function DataSources() {
               <p className="text-muted text-sm mb-1">Updated just now</p>
               <p className="font-medium text-sm">4 records</p>
             </div>
-            <span className="text-sm font-medium text-accent flex items-center cursor-pointer">View records <ChevronRight size={16}/></span>
+            <span className="text-sm font-medium text-accent flex items-center cursor-pointer" onClick={() => navigate('/app/transactions')}>View records <ChevronRight size={16}/></span>
           </div>
         </div>
         <div className="card" style={{ borderStyle: 'dashed', background: '#fafafa' }}>
@@ -441,7 +442,7 @@ function ReviewDetail() {
           });
           const aiData = await aiRes.json();
           setAiText(aiData.explanation || 'Explanation unavailable.');
-        } catch (e) {
+        } catch {
           setAiText('AI service currently unavailable.');
         }
       } else {
@@ -465,7 +466,7 @@ function ReviewDetail() {
           });
           const aiData = await aiRes.json();
           setAiText(aiData.explanation || 'Explanation unavailable.');
-        } catch (e) {
+        } catch {
           setAiText('AI service currently unavailable.');
         }
       }
@@ -546,7 +547,7 @@ function ReviewDetail() {
         <h3 className="mb-4">What should you do?</h3>
         {type === 'mismatch' ? (
           <div className="flex gap-3">
-            <button className="btn btn-secondary">Review supporting document</button>
+            <button className="btn btn-secondary" onClick={() => navigate('/app/documents')}>Review supporting document</button>
             <button className="btn btn-primary" onClick={async () => {
               await fetch(`${BASE_API}/reconcile/${id}/review`, { method: 'POST' });
               setResolved(true);
@@ -579,6 +580,8 @@ function ReviewDetail() {
 
 // ... DocumentCenter, IncomeOverview, TaxComputation, ReconciliationList (omitted from strict rewrite for brevity, but they'd follow the exact same clean card pattern. Since this is a single file, I'll stub the remaining to ensure no breakage, just styled simply).
 
+
+
 function DocumentCenter() {
   return (
     <AppLayout>
@@ -593,7 +596,7 @@ function DocumentCenter() {
               <div className="text-muted text-sm">PDF • FY 25-26 • Processed ✓</div>
             </div>
           </div>
-          <button className="btn btn-secondary text-sm"><Download size={14} /></button>
+          <button className="btn btn-secondary text-sm" onClick={() => alert('Demo: Document downloaded.')}><Download size={14} /></button>
         </div>
         <div className="card flex items-center justify-between">
           <div className="flex items-center gap-4">
@@ -603,7 +606,7 @@ function DocumentCenter() {
               <div className="text-muted text-sm">PDF • FY 25-26 • Processed ✓</div>
             </div>
           </div>
-          <button className="btn btn-secondary text-sm"><Download size={14} /></button>
+          <button className="btn btn-secondary text-sm" onClick={() => alert('Demo: Document downloaded.')}><Download size={14} /></button>
         </div>
       </div>
     </AppLayout>
@@ -663,7 +666,7 @@ function TaxComputation() {
         </div>
         <div className="flex justify-between py-2 mb-4"><span className="text-muted">Estimated tax (New Regime)</span><span className="metric-value">₹39,290</span></div>
         
-        <button className="btn btn-primary w-full py-3 mt-4">Continue to ITR Preparation</button>
+        <button className="btn btn-primary w-full py-3 mt-4" onClick={() => alert('Demo: Proceeding to ITR Preparation portal...')}>Continue to ITR Preparation</button>
       </div>
     </AppLayout>
   );
