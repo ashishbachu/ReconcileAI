@@ -6,10 +6,44 @@ const aisData = require('../data/ais.json');
 
 const router = express.Router();
 
+// Minimal in-memory state for the hackathon prototype
+const reviewedIds = new Set();
+
 router.get('/reconcile', (req, res) => {
-  // In a real app, data comes from a DB via a service.
   const result = reconcile(bankData, aisData);
-  res.json(result);
+  
+  // Apply in-memory reviewed state
+  const finalResult = {
+    matched: [...result.matched],
+    mismatched: [],
+    needsReview: [],
+    bankOnly: [...result.bankOnly],
+    aisOnly: [...result.aisOnly]
+  };
+
+  result.mismatched.forEach(item => {
+    if (reviewedIds.has(item.bankRecord.id)) {
+      finalResult.matched.push({...item, status: 'MATCHED', isReviewed: true});
+    } else {
+      finalResult.mismatched.push(item);
+    }
+  });
+
+  result.needsReview.forEach(item => {
+    if (reviewedIds.has(item.id)) {
+       finalResult.matched.push({bankRecord: item, aisRecord: null, status: 'MATCHED', isReviewed: true});
+    } else {
+       finalResult.needsReview.push(item);
+    }
+  });
+
+  res.json(finalResult);
+});
+
+router.post('/reconcile/:id/review', (req, res) => {
+  const { id } = req.params;
+  reviewedIds.add(id);
+  res.json({ success: true, id });
 });
 
 router.post('/explain-ambiguous', async (req, res) => {

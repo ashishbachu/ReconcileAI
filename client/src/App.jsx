@@ -422,29 +422,60 @@ function ReviewDetail() {
     fetch(`${BASE_API}/reconcile`).then(r => r.json()).then(async data => {
       if (type === 'mismatch') {
         const item = data.mismatched.find(m => m.bankRecord.id === id);
+        const matchedItem = data.matched.find(m => m.bankRecord.id === id);
+        
+        if (matchedItem && matchedItem.isReviewed) {
+          setResolved(true);
+          return;
+        }
+        if (!item) {
+          setRecord('NOT_FOUND');
+          return;
+        }
+        
         setRecord(item);
-        if (item) {
+        try {
           const aiRes = await fetch(`${BASE_API}/explain-discrepancy`, {
             method: 'POST', headers: {'Content-Type':'application/json'},
             body: JSON.stringify({ bankRecord: item.bankRecord, aisRecord: item.aisRecord })
           });
           const aiData = await aiRes.json();
-          setAiText(aiData.explanation);
+          setAiText(aiData.explanation || 'Explanation unavailable.');
+        } catch (e) {
+          setAiText('AI service currently unavailable.');
         }
       } else {
         const item = data.needsReview.find(r => r.id === id);
+        const matchedItem = data.matched.find(m => m.bankRecord.id === id);
+
+        if (matchedItem && matchedItem.isReviewed) {
+          setResolved(true);
+          return;
+        }
+        if (!item) {
+          setRecord('NOT_FOUND');
+          return;
+        }
+
         setRecord({ bankRecord: item });
-        if (item) {
+        try {
           const aiRes = await fetch(`${BASE_API}/explain-ambiguous`, {
             method: 'POST', headers: {'Content-Type':'application/json'},
             body: JSON.stringify({ transaction: item })
           });
           const aiData = await aiRes.json();
-          setAiText(aiData.explanation);
+          setAiText(aiData.explanation || 'Explanation unavailable.');
+        } catch (e) {
+          setAiText('AI service currently unavailable.');
         }
       }
+    }).catch(err => {
+      console.error(err);
+      setRecord('NOT_FOUND');
     });
   }, [id, type]);
+
+  if (record === 'NOT_FOUND') return <AppLayout><div className="card mt-8 p-8 text-center text-muted">Record not found or already reviewed.</div></AppLayout>;
 
   if (!record) return <AppLayout><div className="text-muted">Loading record...</div></AppLayout>;
 
@@ -516,14 +547,29 @@ function ReviewDetail() {
         {type === 'mismatch' ? (
           <div className="flex gap-3">
             <button className="btn btn-secondary">Review supporting document</button>
-            <button className="btn btn-primary" onClick={() => setResolved(true)}>Mark as reviewed</button>
+            <button className="btn btn-primary" onClick={async () => {
+              await fetch(`${BASE_API}/reconcile/${id}/review`, { method: 'POST' });
+              setResolved(true);
+            }}>Mark as reviewed</button>
           </div>
         ) : (
           <div className="flex gap-3 flex-wrap">
-            <button className="btn btn-secondary" onClick={() => setResolved(true)}>Personal Transfer</button>
-            <button className="btn btn-primary" onClick={() => setResolved(true)}>Income</button>
-            <button className="btn btn-secondary" onClick={() => setResolved(true)}>Refund</button>
-            <button className="btn btn-secondary" onClick={() => setResolved(true)}>Other</button>
+            <button className="btn btn-secondary" onClick={async () => {
+              await fetch(`${BASE_API}/reconcile/${id}/review`, { method: 'POST' });
+              setResolved(true);
+            }}>Personal Transfer</button>
+            <button className="btn btn-primary" onClick={async () => {
+              await fetch(`${BASE_API}/reconcile/${id}/review`, { method: 'POST' });
+              setResolved(true);
+            }}>Income</button>
+            <button className="btn btn-secondary" onClick={async () => {
+              await fetch(`${BASE_API}/reconcile/${id}/review`, { method: 'POST' });
+              setResolved(true);
+            }}>Refund</button>
+            <button className="btn btn-secondary" onClick={async () => {
+              await fetch(`${BASE_API}/reconcile/${id}/review`, { method: 'POST' });
+              setResolved(true);
+            }}>Other</button>
           </div>
         )}
       </div>
