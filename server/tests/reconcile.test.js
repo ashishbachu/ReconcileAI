@@ -124,4 +124,41 @@ describe('V2 Deterministic Reconciliation Engine', () => {
     expect(result.bankOnly).toHaveLength(0);
     expect(result.aisOnly).toHaveLength(0);
   });
+
+  it('deterministically excludes DEBIT records from reconciliation', () => {
+    const bankRecords = [
+      { id: 'b1', amount: 5000, type: 'DEBIT', category: 'Salary' },
+      { id: 'b2', amount: 3000, type: 'CREDIT', category: 'Interest' }
+    ];
+    const aisRecords = [
+      { id: 'a1', amount: 5000, category: 'Salary' },
+      { id: 'a2', amount: 3000, category: 'Interest' }
+    ];
+    
+    const result = reconcile(bankRecords, aisRecords);
+    
+    // b2 matches a2. b1 is ignored. a1 becomes aisOnly.
+    expect(result.matched).toHaveLength(1);
+    expect(result.matched[0].bankRecord.id).toBe('b2');
+    expect(result.aisOnly).toHaveLength(1);
+    expect(result.aisOnly[0].id).toBe('a1');
+    expect(result.bankOnly).toHaveLength(0);
+    expect(result.needsReview).toHaveLength(0);
+  });
+
+  it('matches Uncategorized records textually before flagging as ambiguous', () => {
+    const bankRecords = [
+      { id: 'b1', description: 'MONTHLY SALARY', amount: 50000, type: 'CREDIT', category: 'Uncategorized' }
+    ];
+    const aisRecords = [
+      { id: 'a1', amount: 50000, category: 'Salary' }
+    ];
+    
+    const result = reconcile(bankRecords, aisRecords);
+    
+    // It should match textually via normalize() in isSameCategory
+    expect(result.matched).toHaveLength(1);
+    expect(result.matched[0].bankRecord.id).toBe('b1');
+    expect(result.needsReview).toHaveLength(0);
+  });
 });

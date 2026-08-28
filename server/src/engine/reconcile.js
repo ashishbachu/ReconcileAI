@@ -91,6 +91,7 @@ function reconcile(bankRecords, aisRecords) {
 
   // Phase 2: Identify Bank-Only and Ambiguous
   for (const bank of bankRecords) {
+    if (bank.type !== "CREDIT") continue;
     if (matchedBankIds.has(bank.id)) continue;
 
     const normDesc = normalize(bank.description);
