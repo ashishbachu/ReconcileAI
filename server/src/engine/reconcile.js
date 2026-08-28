@@ -19,7 +19,7 @@ function normalize(str) {
 }
 
 function isSameCategory(bank, ais) {
-  if (bank.category && ais.category && bank.category === ais.category) {
+  if (bank.category && ais.category && bank.category !== 'Uncategorized' && bank.category === ais.category) {
     return true;
   }
   

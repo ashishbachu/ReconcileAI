@@ -161,4 +161,22 @@ describe('V2 Deterministic Reconciliation Engine', () => {
     expect(result.matched[0].bankRecord.id).toBe('b1');
     expect(result.needsReview).toHaveLength(0);
   });
+
+  it('prevents Uncategorized records from blindly matching each other purely based on category', () => {
+    const bankRecords = [
+      { id: 'b1', description: 'UNKNOWN DEPOSIT', amount: 5000, type: 'CREDIT', category: 'Uncategorized' }
+    ];
+    const aisRecords = [
+      { id: 'a1', amount: 5000, category: 'Uncategorized' },
+      { id: 'a2', amount: 6000, category: 'Uncategorized' }
+    ];
+    
+    const result = reconcile(bankRecords, aisRecords);
+    
+    // They should not match (neither exact nor mismatch). Bank should go to needsReview, AIS to aisOnly.
+    expect(result.matched).toHaveLength(0);
+    expect(result.mismatched).toHaveLength(0);
+    expect(result.needsReview).toHaveLength(1);
+    expect(result.aisOnly).toHaveLength(2);
+  });
 });
