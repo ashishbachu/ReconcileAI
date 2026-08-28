@@ -124,4 +124,86 @@ describe('V2 Deterministic Reconciliation Engine', () => {
     expect(result.bankOnly).toHaveLength(0);
     expect(result.aisOnly).toHaveLength(0);
   });
+
+  it('deterministically excludes DEBIT records from reconciliation', () => {
+    const bankRecords = [
+      { id: 'b1', amount: 5000, type: 'DEBIT', category: 'Salary' },
+      { id: 'b2', amount: 3000, type: 'CREDIT', category: 'Interest' }
+    ];
+    const aisRecords = [
+      { id: 'a1', amount: 5000, category: 'Salary' },
+      { id: 'a2', amount: 3000, category: 'Interest' }
+    ];
+    
+    const result = reconcile(bankRecords, aisRecords);
+    
+    // b2 matches a2. b1 is ignored. a1 becomes aisOnly.
+    expect(result.matched).toHaveLength(1);
+    expect(result.matched[0].bankRecord.id).toBe('b2');
+    expect(result.aisOnly).toHaveLength(1);
+    expect(result.aisOnly[0].id).toBe('a1');
+    expect(result.bankOnly).toHaveLength(0);
+    expect(result.needsReview).toHaveLength(0);
+  });
+
+  it('matches Uncategorized records textually before flagging as ambiguous', () => {
+    const bankRecords = [
+      { id: 'b1', description: 'MONTHLY SALARY', amount: 50000, type: 'CREDIT', category: 'Uncategorized' }
+    ];
+    const aisRecords = [
+      { id: 'a1', amount: 50000, category: 'Salary' }
+    ];
+    
+    const result = reconcile(bankRecords, aisRecords);
+    
+    // It should match textually via normalize() in isSameCategory
+    expect(result.matched).toHaveLength(1);
+    expect(result.matched[0].bankRecord.id).toBe('b1');
+    expect(result.needsReview).toHaveLength(0);
+  });
+
+  it('prevents Uncategorized records from blindly matching each other purely based on category', () => {
+    const bankRecords = [
+      { id: 'b1', description: 'UNKNOWN DEPOSIT', amount: 5000, type: 'CREDIT', category: 'Uncategorized' }
+    ];
+    const aisRecords = [
+      { id: 'a1', amount: 5000, category: 'Uncategorized' },
+      { id: 'a2', amount: 6000, category: 'Uncategorized' }
+    ];
+    
+    const result = reconcile(bankRecords, aisRecords);
+    
+    // They should not match (neither exact nor mismatch). Bank should go to needsReview, AIS to aisOnly.
+    expect(result.matched).toHaveLength(0);
+    expect(result.mismatched).toHaveLength(0);
+    expect(result.needsReview).toHaveLength(1);
+    expect(result.aisOnly).toHaveLength(2);
+  });
+
+  it('prevents false substring matches from overly aggressive normalization', () => {
+    // "PRINTING COST" should not match "Interest" just because printingcost has "int"
+    const bankRecords = [
+      { id: 'b1', description: 'PRINTING COST', amount: 500, type: 'CREDIT', category: 'Expense' }
+    ];
+    const aisRecords = [
+      { id: 'a1', amount: 500, category: 'Interest' }
+    ];
+    const result = reconcile(bankRecords, aisRecords);
+    
+    expect(result.matched).toHaveLength(0);
+    expect(result.bankOnly).toHaveLength(1);
+    expect(result.aisOnly).toHaveLength(1);
+  });
+
+  it('prevents false ambiguity flags from overly aggressive normalization', () => {
+    // "GROUP INSURANCE" should not trigger "upi" ambiguity
+    const bankRecords = [
+      { id: 'b1', description: 'GROUP INSURANCE', amount: 1000, type: 'CREDIT', category: 'Expense' }
+    ];
+    const aisRecords = [];
+    const result = reconcile(bankRecords, aisRecords);
+    
+    expect(result.needsReview).toHaveLength(0);
+    expect(result.bankOnly).toHaveLength(1);
+  });
 });

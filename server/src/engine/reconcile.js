@@ -13,22 +13,17 @@
  * 6. Unmatched Tax records are AIS_ONLY.
  */
 
-function normalize(str) {
-  if (!str) return "";
-  return str.toLowerCase().replace(/[^a-z0-9]/g, "");
-}
-
 function isSameCategory(bank, ais) {
-  if (bank.category && ais.category && bank.category === ais.category) {
+  if (bank.category && ais.category && bank.category !== 'Uncategorized' && bank.category === ais.category) {
     return true;
   }
   
-  const normBankDesc = normalize(bank.description);
-  const normAisCat = normalize(ais.category);
+  const rawDesc = (bank.description || "").toLowerCase();
+  const rawAis = (ais.category || "").toLowerCase();
   
-  if (normAisCat.includes("salary") && normBankDesc.includes("salary")) return true;
-  if (normAisCat.includes("dividend") && normBankDesc.includes("dividend")) return true;
-  if (normAisCat.includes("interest") && normBankDesc.includes("int")) return true;
+  if (rawAis.includes("salary") && /\bsalary\b/.test(rawDesc)) return true;
+  if (rawAis.includes("dividend") && /\bdividend\b/.test(rawDesc)) return true;
+  if (rawAis.includes("interest") && /\b(interest|int)\b/.test(rawDesc)) return true;
 
   return false;
 }
@@ -91,12 +86,13 @@ function reconcile(bankRecords, aisRecords) {
 
   // Phase 2: Identify Bank-Only and Ambiguous
   for (const bank of bankRecords) {
+    if (bank.type !== "CREDIT") continue;
     if (matchedBankIds.has(bank.id)) continue;
 
-    const normDesc = normalize(bank.description);
+    const rawDesc = (bank.description || "").toLowerCase();
     const isAmbiguous = bank.category === 'Uncategorized' || 
-                        normDesc.includes("upi") || 
-                        normDesc.includes("neft");
+                        /\bupi\b/.test(rawDesc) || 
+                        /\bneft\b/.test(rawDesc);
 
     if (isAmbiguous) {
       result.needsReview.push({

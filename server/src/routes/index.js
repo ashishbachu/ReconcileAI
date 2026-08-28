@@ -17,8 +17,8 @@ router.get('/reconcile', (req, res) => {
     matched: [...result.matched],
     mismatched: [],
     needsReview: [],
-    bankOnly: [...result.bankOnly],
-    aisOnly: [...result.aisOnly]
+    bankOnly: [],
+    aisOnly: []
   };
 
   result.mismatched.forEach(item => {
@@ -31,9 +31,25 @@ router.get('/reconcile', (req, res) => {
 
   result.needsReview.forEach(item => {
     if (reviewedIds.has(item.id)) {
-       finalResult.matched.push({bankRecord: item, aisRecord: null, status: 'MATCHED', isReviewed: true});
+       finalResult.bankOnly.push({...item, status: 'BANK_ONLY', isReviewed: true});
     } else {
        finalResult.needsReview.push(item);
+    }
+  });
+
+  result.bankOnly.forEach(item => {
+    if (reviewedIds.has(item.id)) {
+      finalResult.bankOnly.push({...item, isReviewed: true});
+    } else {
+      finalResult.bankOnly.push(item);
+    }
+  });
+
+  result.aisOnly.forEach(item => {
+    if (reviewedIds.has(item.id)) {
+      finalResult.aisOnly.push({...item, isReviewed: true});
+    } else {
+      finalResult.aisOnly.push(item);
     }
   });
 
