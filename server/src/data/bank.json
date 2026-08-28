@@ -64,5 +64,27 @@
     "category": "Refund",
     "currency": "INR",
     "financialYear": "2025-26"
+  },
+  {
+    "id": "b_1007",
+    "source": "BANK",
+    "date": "2025-10-10",
+    "description": "ACH/DIVIDEND/INFY",
+    "amount": 5000,
+    "type": "CREDIT",
+    "category": "Dividend",
+    "currency": "INR",
+    "financialYear": "2025-26"
+  },
+  {
+    "id": "b_1008",
+    "source": "BANK",
+    "date": "2025-10-10",
+    "description": "ACH/DIVIDEND/INFY",
+    "amount": 5000,
+    "type": "CREDIT",
+    "category": "Dividend",
+    "currency": "INR",
+    "financialYear": "2025-26"
   }
 ]

@@ -108,19 +108,19 @@ function LandingPage() {
             <div className="grid-4 mt-4">
               <div>
                 <div className="text-muted text-sm font-medium mb-1">Records analyzed</div>
-                <div className="metric-value">24</div>
+                <div className="metric-value">9</div>
               </div>
               <div>
                 <div className="text-muted text-sm font-medium mb-1">Matched</div>
-                <div className="metric-value" style={{ color: 'var(--success)' }}>18</div>
+                <div className="metric-value" style={{ color: 'var(--success)' }}>4</div>
               </div>
               <div>
                 <div className="text-muted text-sm font-medium mb-1">Needs review</div>
-                <div className="metric-value" style={{ color: 'var(--warning)' }}>4</div>
+                <div className="metric-value" style={{ color: 'var(--warning)' }}>2</div>
               </div>
               <div>
                 <div className="text-muted text-sm font-medium mb-1">Mismatches</div>
-                <div className="metric-value" style={{ color: 'var(--danger)' }}>2</div>
+                <div className="metric-value" style={{ color: 'var(--danger)' }}>1</div>
               </div>
             </div>
           </div>
@@ -308,7 +308,7 @@ function DataSources() {
           <div className="flex justify-between items-end">
             <div>
               <p className="text-muted text-sm mb-1">Updated just now</p>
-              <p className="font-medium text-sm">24 records</p>
+              <p className="font-medium text-sm">8 records</p>
             </div>
             <span className="text-sm font-medium text-accent flex items-center cursor-pointer" onClick={() => navigate('/app/transactions')}>View records <ChevronRight size={16}/></span>
           </div>
@@ -324,7 +324,7 @@ function DataSources() {
           <div className="flex justify-between items-end">
             <div>
               <p className="text-muted text-sm mb-1">Updated just now</p>
-              <p className="font-medium text-sm">4 records</p>
+              <p className="font-medium text-sm">6 records</p>
             </div>
             <span className="text-sm font-medium text-accent flex items-center cursor-pointer" onClick={() => navigate('/app/transactions')}>View records <ChevronRight size={16}/></span>
           </div>
@@ -366,7 +366,7 @@ function TransactionExplorer() {
       <div className="mb-6 flex justify-between items-end">
         <div>
           <h1 className="mb-1">Transactions</h1>
-          <p className="text-muted">24 records</p>
+          <p className="text-muted">{allBankRecords.length} records</p>
         </div>
         <div className="flex gap-2">
           <button className="btn btn-secondary text-sm">All</button>

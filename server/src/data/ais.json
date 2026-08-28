@@ -34,5 +34,23 @@
     "description": "POST OFFICE SAVINGS",
     "amount": 10000,
     "recordType": "SFT-016"
+  },
+  {
+    "id": "a_2005",
+    "source": "AIS",
+    "financialYear": "2025-26",
+    "category": "Dividend",
+    "description": "INFOSYS LTD",
+    "amount": 5000,
+    "recordType": "SFT-017"
+  },
+  {
+    "id": "a_2006",
+    "source": "AIS",
+    "financialYear": "2025-26",
+    "category": "Dividend",
+    "description": "INFOSYS LTD",
+    "amount": 5000,
+    "recordType": "SFT-017"
   }
 ]
