@@ -179,4 +179,31 @@ describe('V2 Deterministic Reconciliation Engine', () => {
     expect(result.needsReview).toHaveLength(1);
     expect(result.aisOnly).toHaveLength(2);
   });
+
+  it('prevents false substring matches from overly aggressive normalization', () => {
+    // "PRINTING COST" should not match "Interest" just because printingcost has "int"
+    const bankRecords = [
+      { id: 'b1', description: 'PRINTING COST', amount: 500, type: 'CREDIT', category: 'Expense' }
+    ];
+    const aisRecords = [
+      { id: 'a1', amount: 500, category: 'Interest' }
+    ];
+    const result = reconcile(bankRecords, aisRecords);
+    
+    expect(result.matched).toHaveLength(0);
+    expect(result.bankOnly).toHaveLength(1);
+    expect(result.aisOnly).toHaveLength(1);
+  });
+
+  it('prevents false ambiguity flags from overly aggressive normalization', () => {
+    // "GROUP INSURANCE" should not trigger "upi" ambiguity
+    const bankRecords = [
+      { id: 'b1', description: 'GROUP INSURANCE', amount: 1000, type: 'CREDIT', category: 'Expense' }
+    ];
+    const aisRecords = [];
+    const result = reconcile(bankRecords, aisRecords);
+    
+    expect(result.needsReview).toHaveLength(0);
+    expect(result.bankOnly).toHaveLength(1);
+  });
 });
