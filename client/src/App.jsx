@@ -7,7 +7,7 @@ import {
   User, Sparkles, Building, Landmark, ChevronRight, AlertTriangle
 } from 'lucide-react';
 
-const BASE_API = 'http://localhost:3000/api';
+const BASE_API = import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '/api' : 'http://localhost:3000/api');
 
 // --- LAYOUTS ---
 function AppLayout({ children }) {
@@ -123,7 +123,7 @@ function LandingPage() {
           </div>
           <div style={{ padding: '2rem' }}>
             <h4 className="text-muted uppercase text-sm mb-4">Priority Actions</h4>
-            <div className="task-item" style={{ borderLeft: '3px solid var(--danger)' }}>
+            <div className="task-item" style={{ borderLeft: '3px solid var(--danger)', cursor: 'pointer' }} onClick={() => navigate('/app')}>
               <div className="flex items-center gap-3">
                 <AlertTriangle size={18} color="var(--danger)" />
                 <div>
@@ -151,6 +151,7 @@ function Dashboard() {
   const navigate = useNavigate();
   const location = useLocation();
   const [data, setData] = useState(null);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -164,7 +165,10 @@ function Dashboard() {
         if (!cancelled) setData(nextData);
       })
       .catch(error => {
-        if (!cancelled) console.error(error);
+        if (!cancelled) {
+          console.error(error);
+          setError(error);
+        }
       });
 
     return () => {
@@ -172,6 +176,7 @@ function Dashboard() {
     };
   }, [location.key]);
 
+  if (error) return <AppLayout><div className="card mt-8 p-8 text-center text-muted" style={{color: 'var(--danger)'}}>Failed to load data: {error.message}</div></AppLayout>;
   if (!data) return <AppLayout><div className="text-muted">Analyzing records...</div></AppLayout>;
 
   const totalRecords = data.matched.length + data.mismatched.length + data.needsReview.length + data.bankOnly.length + data.aisOnly.length;
@@ -393,11 +398,16 @@ function DataSources() {
 
 function TransactionExplorer() {
   const [data, setData] = useState(null);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetch(`${BASE_API}/reconcile`).then(res => res.json()).then(setData);
+    fetch(`${BASE_API}/reconcile`).then(res => {
+      if (!res.ok) throw new Error(`Request failed: ${res.status}`);
+      return res.json();
+    }).then(setData).catch(setError);
   }, []);
 
+  if (error) return <AppLayout><div className="card mt-8 p-8 text-center text-muted" style={{color: 'var(--danger)'}}>Failed to load transactions: {error.message}</div></AppLayout>;
   if (!data) return <AppLayout><div className="text-muted">Loading transactions...</div></AppLayout>;
   
   const allBankRecords = [
@@ -629,6 +639,20 @@ function ReviewDetail() {
 
 
 function DocumentCenter() {
+  const downloadDemoDoc = (filename) => {
+    const pdfContent = "%PDF-1.4\n1 0 obj<</Type/Catalog/Pages 2 0 R>>endobj 2 0 obj<</Type/Pages/Count 1/Kids[3 0 R]>>endobj 3 0 obj<</Type/Page/MediaBox[0 0 612 792]/Parent 2 0 R/Resources<<>>/Contents 4 0 R>>endobj 4 0 obj<</Length 21>>stream\nBT /F1 24 Tf 100 700 Td (Demo Document) Tj ET\nendstream\nendobj xref 0 5 0000000000 65535 f 0000000009 00000 n 0000000052 00000 n 0000000109 00000 n 0000000214 00000 n trailer<</Size 5/Root 1 0 R>> startxref 285 %%EOF";
+    const blob = new Blob([pdfContent], { type: 'application/pdf' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    alert('Demo: Document downloaded.');
+  };
+
   return (
     <AppLayout>
       <h1 className="mb-2">Your documents</h1>
@@ -642,7 +666,7 @@ function DocumentCenter() {
               <div className="text-muted text-sm">PDF • FY 25-26 • Processed ✓</div>
             </div>
           </div>
-          <button className="btn btn-secondary text-sm" onClick={() => alert('Demo: Document downloaded.')}><Download size={14} /></button>
+          <button className="btn btn-secondary text-sm" onClick={() => downloadDemoDoc('Form_16_ABC_Tech.pdf')}><Download size={14} /></button>
         </div>
         <div className="card flex items-center justify-between">
           <div className="flex items-center gap-4">
@@ -652,7 +676,7 @@ function DocumentCenter() {
               <div className="text-muted text-sm">PDF • FY 25-26 • Processed ✓</div>
             </div>
           </div>
-          <button className="btn btn-secondary text-sm" onClick={() => alert('Demo: Document downloaded.')}><Download size={14} /></button>
+          <button className="btn btn-secondary text-sm" onClick={() => downloadDemoDoc('HDFC_Interest_Cert.pdf')}><Download size={14} /></button>
         </div>
       </div>
     </AppLayout>
