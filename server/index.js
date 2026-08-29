@@ -20,6 +20,10 @@ app.use((req, res) => {
   res.sendFile(path.join(__dirname, '../client/dist/index.html'));
 });
 
-app.listen(PORT, () => {
-  console.log(`KaroFile V2 server running on port ${PORT}`);
-});
+if (process.env.NODE_ENV !== 'production' || process.env.RENDER) {
+  app.listen(PORT, () => {
+    console.log(`KaroFile V2 server running on port ${PORT}`);
+  });
+}
+
+module.exports = app;
