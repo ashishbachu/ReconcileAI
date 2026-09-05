@@ -1,0 +1,90 @@
+[
+  {
+    "id": "b_1001",
+    "source": "BANK",
+    "date": "2025-04-10",
+    "description": "ACH/ABC TECH/SALARY",
+    "amount": 900000,
+    "type": "CREDIT",
+    "category": "Salary",
+    "currency": "INR",
+    "financialYear": "2025-26"
+  },
+  {
+    "id": "b_1002",
+    "source": "BANK",
+    "date": "2025-06-30",
+    "description": "INT/HDFC/SAVINGS",
+    "amount": 30400,
+    "type": "CREDIT",
+    "category": "Interest",
+    "currency": "INR",
+    "financialYear": "2025-26"
+  },
+  {
+    "id": "b_1003",
+    "source": "BANK",
+    "date": "2025-07-15",
+    "description": "ACH/DIVIDEND/RELIANCE",
+    "amount": 12500,
+    "type": "CREDIT",
+    "category": "Dividend",
+    "currency": "INR",
+    "financialYear": "2025-26"
+  },
+  {
+    "id": "b_1004",
+    "source": "BANK",
+    "date": "2025-08-20",
+    "description": "UPI/CREDIT/RAHUL SHARMA",
+    "amount": 35000,
+    "type": "CREDIT",
+    "category": "Uncategorized",
+    "currency": "INR",
+    "financialYear": "2025-26"
+  },
+  {
+    "id": "b_1005",
+    "source": "BANK",
+    "date": "2025-09-01",
+    "description": "NEFT/SELF TRANSFER/SBI",
+    "amount": 50000,
+    "type": "CREDIT",
+    "category": "Transfer",
+    "currency": "INR",
+    "financialYear": "2025-26"
+  },
+  {
+    "id": "b_1006",
+    "source": "BANK",
+    "date": "2026-01-15",
+    "description": "ITD/REFUND/AY24-25",
+    "amount": 4500,
+    "type": "CREDIT",
+    "category": "Refund",
+    "currency": "INR",
+    "financialYear": "2025-26"
+  },
+  {
+    "id": "b_1007",
+    "source": "BANK",
+    "date": "2025-10-10",
+    "description": "ACH/DIVIDEND/INFY",
+    "amount": 5000,
+    "type": "CREDIT",
+    "category": "Dividend",
+    "currency": "INR",
+    "financialYear": "2025-26"
+  },
+  {
+    "id": "b_1008",
+    "source": "BANK",
+    "date": "2025-10-10",
+    "description": "ACH/DIVIDEND/INFY",
+    "amount": 5000,
+    "type": "CREDIT",
+    "category": "Dividend",
+    "currency": "INR",
+    "financialYear": "2025-26"
+  }
+]
